@@ -1,0 +1,236 @@
+{
+  "project": "Royal Citadel for MTA:SA 1.6+",
+  "world_origin": {
+    "x": 2500.0,
+    "y": 2500.0,
+    "z": 0.0
+  },
+  "models": [
+    {
+      "name": "island",
+      "vertices": 5776,
+      "triangles": 2888,
+      "materials": 2,
+      "dff_bytes": 243274,
+      "lod_bytes": 43694,
+      "col_bytes": 32352,
+      "collision": true
+    },
+    {
+      "name": "wall",
+      "vertices": 1200,
+      "triangles": 600,
+      "materials": 6,
+      "dff_bytes": 51624,
+      "lod_bytes": 6732,
+      "col_bytes": 148,
+      "collision": true
+    },
+    {
+      "name": "tower_round",
+      "vertices": 3332,
+      "triangles": 1400,
+      "materials": 7,
+      "dff_bytes": 136015,
+      "lod_bytes": 37963,
+      "col_bytes": 148,
+      "collision": true
+    },
+    {
+      "name": "tower_spire",
+      "vertices": 1232,
+      "triangles": 512,
+      "materials": 6,
+      "dff_bytes": 50979,
+      "lod_bytes": 20359,
+      "col_bytes": 148,
+      "collision": true
+    },
+    {
+      "name": "palace",
+      "vertices": 17618,
+      "triangles": 8178,
+      "materials": 8,
+      "dff_bytes": 728798,
+      "lod_bytes": 99970,
+      "col_bytes": 316,
+      "collision": true
+    },
+    {
+      "name": "wing",
+      "vertices": 2734,
+      "triangles": 1334,
+      "materials": 7,
+      "dff_bytes": 115472,
+      "lod_bytes": 10992,
+      "col_bytes": 148,
+      "collision": true
+    },
+    {
+      "name": "gate",
+      "vertices": 2152,
+      "triangles": 940,
+      "materials": 7,
+      "dff_bytes": 89048,
+      "lod_bytes": 32276,
+      "col_bytes": 260,
+      "collision": true
+    },
+    {
+      "name": "bridge",
+      "vertices": 2624,
+      "triangles": 1264,
+      "materials": 5,
+      "dff_bytes": 110398,
+      "lod_bytes": 1538,
+      "col_bytes": 160,
+      "collision": true
+    },
+    {
+      "name": "stair",
+      "vertices": 2360,
+      "triangles": 1040,
+      "materials": 3,
+      "dff_bytes": 97161,
+      "lod_bytes": 3713,
+      "col_bytes": 624,
+      "collision": true
+    },
+    {
+      "name": "fountain",
+      "vertices": 3060,
+      "triangles": 1224,
+      "materials": 5,
+      "dff_bytes": 123476,
+      "lod_bytes": 46680,
+      "col_bytes": 148,
+      "collision": true
+    },
+    {
+      "name": "statue",
+      "vertices": 732,
+      "triangles": 324,
+      "materials": 4,
+      "dff_bytes": 30902,
+      "lod_bytes": 17626,
+      "col_bytes": 148,
+      "collision": true
+    },
+    {
+      "name": "pavilion",
+      "vertices": 3460,
+      "triangles": 1408,
+      "materials": 4,
+      "dff_bytes": 139880,
+      "lod_bytes": 28392,
+      "col_bytes": 148,
+      "collision": true
+    },
+    {
+      "name": "rock",
+      "vertices": 297,
+      "triangles": 99,
+      "materials": 1,
+      "dff_bytes": 12008,
+      "lod_bytes": 8880,
+      "col_bytes": 148,
+      "collision": true
+    },
+    {
+      "name": "pine",
+      "vertices": 1080,
+      "triangles": 432,
+      "materials": 3,
+      "dff_bytes": 43956,
+      "lod_bytes": 13404,
+      "col_bytes": 148,
+      "collision": true
+    },
+    {
+      "name": "hedge",
+      "vertices": 448,
+      "triangles": 184,
+      "materials": 3,
+      "dff_bytes": 18693,
+      "lod_bytes": 1457,
+      "col_bytes": 0,
+      "collision": false
+    },
+    {
+      "name": "banner",
+      "vertices": 376,
+      "triangles": 164,
+      "materials": 4,
+      "dff_bytes": 16146,
+      "lod_bytes": 8170,
+      "col_bytes": 0,
+      "collision": false
+    },
+    {
+      "name": "plaza",
+      "vertices": 368,
+      "triangles": 176,
+      "materials": 4,
+      "dff_bytes": 16289,
+      "lod_bytes": 2697,
+      "col_bytes": 148,
+      "collision": true
+    },
+    {
+      "name": "waterfall",
+      "vertices": 68,
+      "triangles": 34,
+      "materials": 2,
+      "dff_bytes": 3465,
+      "lod_bytes": 1461,
+      "col_bytes": 0,
+      "collision": false
+    },
+    {
+      "name": "moat",
+      "vertices": 16,
+      "triangles": 8,
+      "materials": 1,
+      "dff_bytes": 1116,
+      "lod_bytes": 1120,
+      "col_bytes": 0,
+      "collision": false
+    },
+    {
+      "name": "mountain",
+      "vertices": 240,
+      "triangles": 96,
+      "materials": 2,
+      "dff_bytes": 10284,
+      "lod_bytes": 4012,
+      "col_bytes": 888,
+      "collision": true
+    },
+    {
+      "name": "lamp",
+      "vertices": 376,
+      "triangles": 160,
+      "materials": 4,
+      "dff_bytes": 16148,
+      "lod_bytes": 10936,
+      "col_bytes": 148,
+      "collision": true
+    }
+  ],
+  "model_count": 21,
+  "placement_count": 205,
+  "light_coronas": 18,
+  "ai_albedo_textures": [
+    "stone_new",
+    "stone_old",
+    "roof_slate",
+    "marble_ivory",
+    "copper_old",
+    "gold_bronze",
+    "royal_oak",
+    "paving",
+    "cliff_rock"
+  ],
+  "texture_size": 512,
+  "build_seconds": 22.06
+}
