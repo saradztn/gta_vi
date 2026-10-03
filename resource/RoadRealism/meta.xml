@@ -25,6 +25,7 @@
     <file src="shaders/rain.fx" />
     <file src="shaders/post.fx" />
     <file src="audio/rain_loop.wav" />
+    <file src="files/road_base.txd" />
     <file src="files/road_fallback.txd" />
     <file src="textures/asphalt/asphalt_bridge.dds" />
     <file src="textures/asphalt/asphalt_carpark.dds" />

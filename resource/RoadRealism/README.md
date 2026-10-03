@@ -38,6 +38,23 @@ That is the whole installation. Copy this folder into
 - **A rain system** with world rain, screen rain, windshield/lens droplets, streaks, splashes
   and a matching wet-road response, all tied to the same intensity value.
 
+## Two rendering layers (reliability first)
+
+1. **Base layer (on by default, never depends on shaders).** A RenderWare TXD
+   (`files/road_base.txd`) holds photographic, AI-generated asphalt / concrete / sidewalk /
+   shoulder textures bound **under the original San Andreas texture names**. At start the
+   resource scans `engineGetModelTextureNames` over the object model IDs and calls
+   `engineImportTXD` on exactly the models that use a road surface. The original DFF geometry and
+   COL collision are never touched, so the roads match San Andreas 100% in layout, UVs and
+   collision — only the surface pixels are upgraded. This layer renders through the game's own
+   pipeline, so it works on any driver.
+
+2. **Effect layer (opt-in, `/roadfx 1-4`).** The PBR-style shader stack (wetness, reflections,
+   rain, night response, grading) from `shaders/`. It is off by default (`/roadfx 0`) so a driver
+   that cannot compile the shaders still shows correct upgraded roads; type `/roadfx 2` (or up to
+   `4`) to add the full wet/reflection look. If a shader fails to compile, only that effect is
+   disabled and the exact error is printed.
+
 ## What it deliberately does *not* do
 
 - No new city, buildings, roads-as-objects, DFF geometry, extra map objects or COL changes.

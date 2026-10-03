@@ -18,7 +18,7 @@ RR.VERSION = '1.0.0'
 RR.Count = { materials = 0, markings = 0, shaders = 0, applied = 0, failed = 0, textures = 0 }
 RR.State = {
     quality = 'high',
-    fx = 2,                    -- 0 off, 1 materials, 2 +reflection, 3 +rain, 4 +grade
+    fx = 0,                    -- 0 off (base TXD look), 1 materials, 2 +reflection, 3 +rain, 4 +grade
     wet = 0.0,
     puddle = 0.0,
     rain = 0.0,
@@ -570,6 +570,57 @@ end
 -- ---------------------------------------------------------------------------
 -- quality presets
 -- ---------------------------------------------------------------------------
+-- ---------------------------------------------------------------------------
+-- base look: AI photo textures bound to the ORIGINAL SA surface names, per model.
+-- The original DFF/COL are never touched, so geometry and collision match San Andreas
+-- 100%; only the surface pixels are swapped.  This is the reliable default look and does
+-- not depend on the shader compiling at all.
+-- ---------------------------------------------------------------------------
+RR.Base = { txd = nil, imported = 0, nextId = 400, timer = nil }
+
+local function baseStep()
+    local B = RR.Base
+    if not B.txd then
+        return
+    end
+    local last = math.min(B.nextId + 300, 19999)
+    for id = B.nextId, last do
+        local ok, names = pcall(engineGetModelTextureNames, id)
+        if ok and type(names) == 'table' then
+            for _, n in ipairs(names) do
+                if ROAD_BASE[n] then
+                    if engineImportTXD(B.txd, id) then
+                        B.imported = B.imported + 1
+                    end
+                    break
+                end
+            end
+        end
+    end
+    B.nextId = last + 1
+    if B.nextId > 19999 then
+        if B.timer then
+            killTimer(B.timer)
+            B.timer = nil
+        end
+        RR.Say(string.format('base road textures bound to %d models (original geometry kept)', B.imported))
+    end
+end
+
+function RR.Base.start()
+    if not ROAD_BASE_TXD then
+        return
+    end
+    RR.Base.txd = engineLoadTXD(ROAD_BASE_TXD)
+    if not RR.Base.txd then
+        RR.Warn('base road TXD could not be loaded (' .. tostring(ROAD_BASE_TXD) .. ')')
+        return
+    end
+    RR.Base.nextId = 400
+    RR.Base.imported = 0
+    RR.Base.timer = setTimer(baseStep, 60, 0)
+end
+
 function RR.Quality()
     return ROAD_QUALITY[RR.State.quality] or ROAD_QUALITY.high
 end
@@ -965,6 +1016,7 @@ function RR.start()
     RR.State.quality = SETTINGS.defaultQuality
     RR.State.exposure = SETTINGS.exposure
     RR.State.debug = SETTINGS.debug and 1 or 0
+    RR.Base.start()
 
     local n, bad = RR.Tex.loadShared()
     RR.Say(string.format('shared texture set loaded: %d%s', n, bad > 0 and (' (' .. bad .. ' missing)') or ''))
@@ -1002,7 +1054,7 @@ function RR.start()
     RR.Rain.start()
     RR.Refl.start()
     RR.State.started = true
-    RR.State.fx = 2
+    RR.State.fx = 0   -- base TXD is the reliable look; enable the shader layer with /roadfx
     RR.Say(string.format('asphalt / concrete / pavement materials loaded: %d (+ %d road markings)',
         RR.Count.materials, RR.Count.markings))
 

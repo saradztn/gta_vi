@@ -286,19 +286,19 @@ ROAD_MATERIALS = {
 }
 
 ROAD_MARKINGS = {
-    mark_line_white = { label = "White lane line (solid)", file = "textures/markings/mark_line_white.dds", rough = 0.550, retro = 0.90, coverage = 0.058 },
-    mark_line_yellow = { label = "Yellow centre line", file = "textures/markings/mark_line_yellow.dds", rough = 0.550, retro = 0.90, coverage = 0.077 },
-    mark_double_white = { label = "Double white line", file = "textures/markings/mark_double_white.dds", rough = 0.550, retro = 0.90, coverage = 0.112 },
-    mark_double_yellow = { label = "Double yellow line", file = "textures/markings/mark_double_yellow.dds", rough = 0.550, retro = 0.90, coverage = 0.095 },
-    mark_broken_white = { label = "Broken (dashed) white lane line", file = "textures/markings/mark_broken_white.dds", rough = 0.550, retro = 0.90, coverage = 0.008 },
-    mark_edge_white = { label = "White edge line", file = "textures/markings/mark_edge_white.dds", rough = 0.580, retro = 0.80, coverage = 0.093 },
-    mark_stopline = { label = "Transverse stop line", file = "textures/markings/mark_stopline.dds", rough = 0.550, retro = 0.85, coverage = 0.177 },
-    mark_crosswalk = { label = "Pedestrian crossing (zebra bars)", file = "textures/markings/mark_crosswalk.dds", rough = 0.520, retro = 0.80, coverage = 0.269 },
-    mark_arrow_straight = { label = "Straight ahead arrow", file = "textures/markings/mark_arrow_straight.dds", rough = 0.550, retro = 0.90, coverage = 0.051 },
-    mark_arrow_left = { label = "Left turn arrow", file = "textures/markings/mark_arrow_left.dds", rough = 0.550, retro = 0.90, coverage = 0.051 },
-    mark_arrow_right = { label = "Right turn arrow", file = "textures/markings/mark_arrow_right.dds", rough = 0.550, retro = 0.90, coverage = 0.070 },
-    mark_stop_word = { label = "Painted STOP / slow text", file = "textures/markings/mark_stop_word.dds", rough = 0.550, retro = 0.85, coverage = 0.153 },
-    mark_hatching = { label = "Hatched / chevron no-drive area", file = "textures/markings/mark_hatching.dds", rough = 0.550, retro = 0.70, coverage = 0.395 },
+    mark_line_white = { label = "White lane line (solid)", file = "textures/markings/mark_line_white.dds", rough = 0.550, retro = 0.90, coverage = 0.069 },
+    mark_line_yellow = { label = "Yellow centre line", file = "textures/markings/mark_line_yellow.dds", rough = 0.550, retro = 0.90, coverage = 0.073 },
+    mark_double_white = { label = "Double white line", file = "textures/markings/mark_double_white.dds", rough = 0.550, retro = 0.90, coverage = 0.099 },
+    mark_double_yellow = { label = "Double yellow line", file = "textures/markings/mark_double_yellow.dds", rough = 0.550, retro = 0.90, coverage = 0.101 },
+    mark_broken_white = { label = "Broken (dashed) white lane line", file = "textures/markings/mark_broken_white.dds", rough = 0.550, retro = 0.90, coverage = 0.011 },
+    mark_edge_white = { label = "White edge line", file = "textures/markings/mark_edge_white.dds", rough = 0.580, retro = 0.80, coverage = 0.095 },
+    mark_stopline = { label = "Transverse stop line", file = "textures/markings/mark_stopline.dds", rough = 0.550, retro = 0.85, coverage = 0.163 },
+    mark_crosswalk = { label = "Pedestrian crossing (zebra bars)", file = "textures/markings/mark_crosswalk.dds", rough = 0.520, retro = 0.80, coverage = 0.283 },
+    mark_arrow_straight = { label = "Straight ahead arrow", file = "textures/markings/mark_arrow_straight.dds", rough = 0.550, retro = 0.90, coverage = 0.045 },
+    mark_arrow_left = { label = "Left turn arrow", file = "textures/markings/mark_arrow_left.dds", rough = 0.550, retro = 0.90, coverage = 0.071 },
+    mark_arrow_right = { label = "Right turn arrow", file = "textures/markings/mark_arrow_right.dds", rough = 0.550, retro = 0.90, coverage = 0.054 },
+    mark_stop_word = { label = "Painted STOP / slow text", file = "textures/markings/mark_stop_word.dds", rough = 0.550, retro = 0.85, coverage = 0.129 },
+    mark_hatching = { label = "Hatched / chevron no-drive area", file = "textures/markings/mark_hatching.dds", rough = 0.550, retro = 0.70, coverage = 0.372 },
 }
 
 ROAD_QUALITY = {

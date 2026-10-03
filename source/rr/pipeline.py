@@ -130,6 +130,46 @@ def build_fallback_txd(res, baked):
     return p, os.path.getsize(p), [t['name'] for t in lst]
 
 
+def _load_ai(name):
+    from PIL import Image
+    p = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '_ai', name)
+    return np.asarray(Image.open(p).convert('RGB'), np.float32) / 255.0
+
+
+def build_base_txd(res):
+    """TXD holding AI photo textures under the ORIGINAL SA surface names.
+
+    This is the reliable, geometry-faithful base look (NightCity-style): the original
+    DFF/COL are untouched, only the surface pixels are swapped per model at runtime via
+    engineImportTXD, so the roads match San Andreas 100% in layout and collision."""
+    from PIL import Image
+    worn = _load_ai('asphalt_worn.png')
+    variants = {
+        'asphalt': [np.clip(worn * 0.55, 0, 1), worn, np.clip(worn * 1.30 + 0.03, 0, 1)],
+        'concrete': [_load_ai('concrete_road.png')],
+        'pavement': [_load_ai('sidewalk.png')],
+        'shoulder': [_load_ai('dirt_shoulder.png')],
+    }
+    mat = {m['key']: m for m in MAT.MATERIALS}
+    lst, names = [], []
+    for name in sorted(scan_db.WHITELIST):
+        mk, _mark = scan_db.WHITELIST[name]
+        cat = mat[mk]['cat']
+        if cat not in variants:
+            continue
+        pool = variants[cat]
+        img = pool[hash(name) % len(pool)]
+        im = Image.fromarray((img * 255).astype(np.uint8)).resize((256, 256), Image.BOX)
+        arr = np.asarray(im, np.float32) / 255.0
+        lst.append(dict(name=name, w=256, h=256, fmt='DXT1',
+                        chain=dxt.compress_chain(arr, 'DXT1'), alpha=False))
+        names.append(name)
+    os.makedirs(os.path.join(res, 'files'), exist_ok=True)
+    p = os.path.join(res, 'files', 'road_base.txd')
+    open(p, 'wb').write(rwtxd.build_txd(lst))
+    return p, os.path.getsize(p), names
+
+
 def build_rain_audio(res, seconds=8.0, rate=22050):
     """seamless rain bed: periodic (loopable) filtered noise + sparse droplet transients."""
     n = int(seconds * rate)
@@ -324,15 +364,25 @@ def build(res, quiet=False):
     log, total, baked, mark_stats = build_textures(res)
     p, sz, names = build_fallback_txd(res, baked)
     total += sz
+    bp, bsz, bnames = build_base_txd(res)
+    total += bsz
     ap, asz = build_rain_audio(res)
     total += asz
     emit_materials_lua(res, mark_stats)
     emit_roads_lua(res)
+    with open(os.path.join(res, 'config', 'roads.lua'), 'a') as f:
+        f.write('\n-- AI photo textures bound to the ORIGINAL SA surface names (geometry-faithful base look)\n')
+        f.write('ROAD_BASE_TXD = "files/road_base.txd"\nROAD_BASE = {\n')
+        for n in bnames:
+            f.write('    [%s] = true,\n' % _q(n))
+        f.write('}\n')
     emit_settings_lua(res)
     stats = dict(files=len(log), bytes=total, materials=len(MAT.MATERIALS),
                  markings=len(MAT.MARKINGS), fallback=names, fallback_bytes=sz,
+                 base=bnames, base_bytes=bsz,
                  audio=asz, seconds=round(time.time() - t0, 1))
-    print('   fallback TXD %.2f MB (%d original names), rain loop %.2f MB' % (sz / 1048576, len(names), asz / 1048576))
+    print('   fallback TXD %.2f MB (%d names) | base TXD %.2f MB (%d names) | rain loop %.2f MB'
+          % (sz / 1048576, len(names), bsz / 1048576, len(bnames), asz / 1048576))
     if not quiet:
         os.makedirs(os.path.join(HERE, '..', '_work'), exist_ok=True)
         json.dump(stats, open(os.path.join(HERE, '..', '_work', 'texture_report.json'), 'w'), indent=1)

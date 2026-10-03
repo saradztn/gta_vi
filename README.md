@@ -70,6 +70,7 @@ errors**.
 | Material textures | 81 DDS, ~23 MB, largest 1024 px |
 | Rain overlays | 3 PNG (droplets, streak, splash) |
 | Fallback TXD | 18 original texture names |
+| Base TXD | 62 original surface names, AI photo textures |
 | Shaders | 5 (road, wetroad, reflection, rain, post) |
 | Scripts | 9 Lua |
-| Total | ~26 MB, download friendly |
+| Total | ~27 MB, download friendly |

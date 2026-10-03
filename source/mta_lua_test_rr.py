@@ -81,12 +81,16 @@ check(int(seed()) > 40, 'seeded %d visible world textures (whitelist + unrelated
 
 section('resource start')
 T.fireClient('onClientResourceStart', g.resourceRoot)
-T.adv(4000)
+T.adv(6000)
 check(T.created('shader') >= 4, 'created %d shaders (road + reflection + rain + post)' % T.created('shader'))
-check(T.created('texture') > 10, 'loaded %d material textures' % T.created('texture'))
-check(int(napplied()) > 20, 'applied the road shader to %d world textures' % int(napplied()))
+check(int(g.RR.Base.imported) > 0, 'base road textures bound to %d models (original geometry kept)' % int(g.RR.Base.imported))
 check('RoadRealism' in chatall() or 'RoadRealism' in logall(), 'boot report printed')
 check('failed' not in chatall().lower(), 'boot produced no failure messages')
+# the shader effect layer is opt-in (/roadfx); enable it and verify it still works
+T.cmd('roadfx', '2')
+T.adv(4000)
+check(T.created('texture') > 10, 'loaded %d material textures for the shader layer' % T.created('texture'))
+check(int(napplied()) > 20, 'shader layer applied to %d world textures' % int(napplied()))
 for bad in ('cj_barbers', 'vehiclegeneric64', 'tree09', 'sign_stop1'):
     check(not hasapplied(bad), '%s was NOT given a road shader' % bad)
 
