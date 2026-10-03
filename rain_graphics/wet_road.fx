@@ -48,7 +48,7 @@ struct PSInput
     float4 Position : POSITION0;
     float4 Diffuse : COLOR0;
     float2 TexCoord : TEXCOORD0;
-    float3 WorldNormal : TEXCOORD1;
+    float WorldUp : TEXCOORD1;
     float2 ScreenUV : TEXCOORD2;
 };
 
@@ -58,7 +58,9 @@ PSInput VertexShaderFunction(VSInput input)
     output.Position = mul(float4(input.Position, 1.0), gWorldViewProjection);
     output.Diffuse = input.Diffuse;
     output.TexCoord = input.TexCoord;
-    output.WorldNormal = normalize(mul(input.Normal, (float3x3)gWorld));
+
+    float3 worldNormal = normalize(mul(input.Normal, (float3x3)gWorld));
+    output.WorldUp = worldNormal.z;
 
     float inverseW = 1.0 / max(abs(output.Position.w), 0.0001);
     float2 ndc = output.Position.xy * inverseW;
@@ -69,32 +71,22 @@ PSInput VertexShaderFunction(VSInput input)
 float4 PixelShaderFunction(PSInput input) : COLOR0
 {
     float4 material = tex2D(BaseSampler, input.TexCoord) * input.Diffuse;
-    float wet = saturate(uWetness);
 
-    // Restrict the effect to upward-facing ground/road surfaces.
-    float roadMask = saturate((normalize(input.WorldNormal).z - 0.42) * 2.1);
-    roadMask = roadMask * roadMask * (3.0 - 2.0 * roadMask);
-    wet *= roadMask;
+    // Keep the pixel program under the Shader Model 2 instruction budget.
+    // The generated normal masks vertical walls; no per-pixel normalize/sin/pow.
+    float roadMask = saturate((input.WorldUp - 0.48) * 1.9);
+    float wet = saturate(uWetness) * roadMask;
 
-    float ripple = 0.5 + 0.5 * sin(input.TexCoord.x * 43.0 + input.TexCoord.y * 19.0 + uTime * 0.7);
-    float2 distortion = float2(
-        sin(input.TexCoord.x * 71.0 + uTime),
-        cos(input.TexCoord.y * 59.0 - uTime * 0.8)
-    ) * (0.0015 + 0.0025 * ripple) * wet;
-
-    // A restrained previous-frame screen sample gives wet asphalt a soft,
-    // imperfect reflection. It is intentionally subtle, not a full mirror.
-    float2 reflectionUV = saturate(input.ScreenUV + float2(0.0, -0.022) + distortion);
+    // A cheap moving triangular wave distorts the screen sample like shallow ripples.
+    float phase = frac(dot(input.TexCoord, float2(43.0, 19.0)) + uTime * 0.08);
+    float ripple = abs(phase * 2.0 - 1.0);
+    float2 rippleOffset = (float2(ripple, 1.0 - ripple) - 0.5) * wet * 0.004;
+    float2 reflectionUV = saturate(input.ScreenUV + float2(0.0, -0.022) + rippleOffset);
     float3 sceneReflection = tex2D(ScreenSampler, reflectionUV).rgb;
 
-    float3 wetColor = material.rgb * (1.0 - 0.14 * wet);
-    float reflectionAmount = uScreenValid * wet * uReflectionStrength * (0.35 + 0.65 * ripple);
+    float3 wetColor = material.rgb * (1.0 - wet * 0.14);
+    float reflectionAmount = uScreenValid * wet * uReflectionStrength;
     wetColor = lerp(wetColor, sceneReflection * float3(0.68, 0.77, 0.90), reflectionAmount);
-
-    // Moving narrow highlights imitate street-light glints in shallow puddles.
-    float glintWave = 0.5 + 0.5 * sin(input.TexCoord.x * 17.0 - input.TexCoord.y * 31.0 + uTime * 0.55);
-    float glint = pow(saturate(glintWave), 12.0) * wet * 0.055;
-    wetColor += float3(0.78, 0.86, 1.0) * glint;
 
     return float4(wetColor, material.a);
 }

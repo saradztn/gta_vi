@@ -55,7 +55,7 @@ local function createWetShader()
     )
 
     if not isElement(createdShader) then
-        outputDebugString("[RainFX] wet_road.fx could not be created: " .. tostring(techniqueOrError), 2)
+        outputDebugString("[RainFX] wet_road.fx could not be created: " .. tostring(techniqueOrError or "shader compilation failed or is unsupported"), 2)
         return false
     end
 
