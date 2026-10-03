@@ -7,6 +7,9 @@ local SCREEN_CAPTURE_INTERVAL = 100 -- ms; keeps the screen-space sheen inexpens
 local ROAD_SHADER_DISTANCE = 700
 local FORCE_RAINY_SKY = true
 local RAINY_WEATHER_ID = 8 -- GTA:SA rainy preset; set FORCE_RAINY_SKY=false to keep server weather
+local FORCE_NIGHT = true
+local NIGHT_HOUR = 0
+local NIGHT_MINUTE = 30 -- NightCity's neon/reflection look is most visible after dark
 
 -- GTA:SA uses many area-specific texture names, so bind once to the world wildcard.
 -- Generated normals in the shader restrict the visible effect to upward-facing
@@ -21,6 +24,8 @@ local wetness = 0
 local shader = nil
 local screenSource = nil
 local previousWeather = nil
+local previousHour = nil
+local previousMinute = nil
 local lastScreenCapture = 0
 local appliedPatterns = {}
 
@@ -30,6 +35,24 @@ end
 
 local function clamp01(value)
     return math.max(0, math.min(1, value))
+end
+
+local function applyLocalAtmosphere()
+    if intensity > 0 then
+        if FORCE_RAINY_SKY then
+            setWeather(RAINY_WEATHER_ID)
+        end
+        if FORCE_NIGHT then
+            setTime(NIGHT_HOUR, NIGHT_MINUTE)
+        end
+    else
+        if FORCE_RAINY_SKY and previousWeather ~= nil then
+            setWeather(previousWeather)
+        end
+        if FORCE_NIGHT and previousHour ~= nil then
+            setTime(previousHour, previousMinute or 0)
+        end
+    end
 end
 
 local function destroyWetShader()
@@ -96,16 +119,15 @@ local function enableRainFX()
     enabled = true
     wetness = 0
     previousWeather = getWeather()
+    previousHour, previousMinute = getTime()
 
-    -- This changes only the local client's atmosphere; it never changes the server map.
-    if FORCE_RAINY_SKY then
-        setWeather(RAINY_WEATHER_ID)
-    end
+    -- These alter only the local client's atmosphere/time; the server map is untouched.
+    applyLocalAtmosphere()
     setRainLevel(intensity)
 
     local shaderReady = createWetShader()
     if shaderReady and #appliedPatterns > 0 then
-        chat(string.format("rain and wet-road reflections enabled (%d world texture binding).", #appliedPatterns))
+        chat(string.format("rain, midnight and wet-road reflections enabled (%d world texture binding).", #appliedPatterns))
     elseif shaderReady then
         chat("rain enabled, but the world shader did not bind to any texture. Check debugscript 3.")
     else
@@ -125,7 +147,12 @@ local function disableRainFX(showMessage)
     if FORCE_RAINY_SKY and previousWeather ~= nil then
         setWeather(previousWeather)
     end
+    if FORCE_NIGHT and previousHour ~= nil then
+        setTime(previousHour, previousMinute or 0)
+    end
     previousWeather = nil
+    previousHour = nil
+    previousMinute = nil
     wetness = 0
 
     if showMessage then
@@ -143,9 +170,7 @@ local function setIntensity(value)
     intensity = clamp01(parsed)
     if enabled then
         setRainLevel(intensity)
-        if FORCE_RAINY_SKY and previousWeather ~= nil then
-            setWeather(intensity > 0 and RAINY_WEATHER_ID or previousWeather)
-        end
+        applyLocalAtmosphere()
     end
     chat(string.format("intensity set to %.2f", intensity))
 end
@@ -177,7 +202,7 @@ addEventHandler("onClientPreRender", root, function(timeSlice)
 end)
 
 -- Capture after the world has rendered; the shader uses this previous-frame image
--- for a subtle, distorted screen-space reflection rather than a fake replacement map.
+-- for its distorted screen-space reflection.
 addEventHandler("onClientHUDRender", root, function()
     if not enabled or not isElement(screenSource) then
         return
