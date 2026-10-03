@@ -2,7 +2,7 @@
 -- No GTA model IDs are replaced: dynamic object model IDs are requested with MTA's
 -- engineRequestModel, then paired with the generated RenderWare DFF/TXD/COL files.
 -- Edit CASTLE_ORIGIN below to move the complete, planned site on your map.
-local CASTLE_ORIGIN = { x = -2800.0, y = -300.0, z = 0.0, rz = 0.0 } -- west-coast offshore test site; edit for your map
+local CASTLE_ORIGIN = { x = -3525.46460, y = -162.18356, z = 46.86824, rz = 0.0 } -- requested site
 local CFG = {
     dimension = 0,
     interior = 0,
