@@ -26,16 +26,61 @@ from tools.texture_pipeline import prepare_txd
 
 WORLD={'x':2403.37817,'y':3569.52466,'z':37.82248}
 TEXTURE_SOURCES=[
-    ('stone_new','limestone_fresh.png'),
-    ('stone_old','limestone_aged_moss.png'),
-    ('roof_slate','slate_roof.png'),
-    ('marble_ivory','ivory_marble.png'),
-    ('copper_old','aged_copper.png'),
-    ('gold_bronze','gilded_bronze.png'),
-    ('royal_oak','oak_wood.png'),
-    ('paving','courtyard_cobble.png'),
-    ('cliff_rock','cliff_gneiss.png'),
+    ('stone_new','albedo/limestone_fresh.png'),
+    ('stone_old','albedo/limestone_aged_moss.png'),
+    ('roof_slate','albedo/slate_roof.png'),
+    ('marble_ivory','albedo/ivory_marble.png'),
+    ('copper_old','albedo/aged_copper.png'),
+    ('gold_bronze','albedo/gilded_bronze.png'),
+    ('royal_oak','albedo/oak_wood.png'),
+    ('paving','albedo/courtyard_cobble.png'),
+    ('cliff_rock','albedo/cliff_gneiss.png'),
+    ('royal_mosaic','albedo/royal_marble_mosaic.png'),
+    ('stained_glass','albedo/stained_glass_royal.png',256,512),
+    ('moat_surface','albedo/reflective_courtyard_water.png'),
+    ('hall_carpet','ai_textures/batch_01/01_great_hall_crimson_carpet.png'),
+    ('throne_brocade','ai_textures/batch_01/02_throne_room_blue_brocade.png'),
+    ('carved_oak','ai_textures/batch_01/03_gothic_carved_oak_panel.png'),
+    ('gothic_tracery','ai_textures/batch_01/04_gothic_limestone_tracery.png'),
+    ('gilded_trim','ai_textures/batch_01/05_gilded_gothic_molding.png',512,256),
+    ('vault_fresco','ai_textures/batch_01/06_celestial_vault_fresco.png'),
+    ('library_books','ai_textures/batch_01/07_library_book_spines.png',512,256),
+    ('iron_grille','ai_textures/batch_01/08_forged_gothic_iron_grille.png'),
+    ('rose_window','ai_textures/batch_01/09_royal_rose_window_glass.png'),
+    ('royal_crest','ai_textures/batch_01/10_royal_heraldic_embroidery.png'),
+    ('walnut_parquet','ai_textures/batch_02/01_private_chamber_walnut_parquet.png'),
+    ('throne_velvet','ai_textures/batch_02/02_throne_velvet_upholstery.png'),
+    ('curtain_silk','ai_textures/batch_02/03_royal_curtain_silk.png'),
+    ('chamber_damask','ai_textures/batch_02/04_private_chamber_damask_wallcovering.png'),
+    ('chapel_tile','ai_textures/batch_02/05_royal_chapel_encaustic_tile.png'),
+    ('hearth_stone','ai_textures/batch_02/06_hearth_scorched_stone_albedo.png'),
+    ('black_iron','ai_textures/batch_02/07_blacksmith_wrought_iron_albedo.png'),
+    ('emerald_damask','ai_textures/batch_03/01_emerald_royal_velvet_damask.png'),
+    ('royal_leather','ai_textures/batch_03/02_embossed_royal_leather.png'),
+    ('blank_parchment','ai_textures/batch_03/03_blank_aged_parchment.png'),
+    ('wall_fresco','ai_textures/batch_03/04_wall_fresco_mountain_citadel.png'),
+    ('black_onyx','ai_textures/batch_03/05_black_onyx_gold_veined_marble.png'),
+    ('garden_lawn','ai_textures/batch_03/06_formal_garden_lawn.png'),
+    ('ivy_stone','ai_textures/batch_03/07_ivy_limestone_wall.png'),
+    ('pine_bark','ai_textures/batch_03/08_pine_bark_albedo.png'),
+    ('waterfall_foam','ai_textures/batch_03/09_waterfall_foam_surface.png'),
+    ('chapel_border','ai_textures/batch_03/10_chapel_mosaic_border.png',512,256),
 ]
+
+ROOMS_LOCAL=[
+    ('great_hall','Great Hall',0.0,-5.0,11.2,180.0),
+    ('throne_room','Throne Room',0.0,22.0,11.2,180.0),
+    ('armory','Armory',-31.0,-21.0,11.2,90.0),
+    ('library','Royal Library',-31.0,-4.0,11.2,90.0),
+    ('chapel','Royal Chapel',-31.0,17.0,11.2,90.0),
+    ('west_solar','West Solar',-31.0,26.0,11.2,90.0),
+    ('banquet_hall','Banquet Hall',31.0,-27.0,11.2,270.0),
+    ('council','Council Chamber',31.0,1.0,11.2,270.0),
+    ('treasury','Treasury',31.0,12.0,11.2,270.0),
+    ('bedchamber','Royal Bedchamber',31.0,22.0,11.2,270.0),
+]
+PALACE_LAYOUT_ORIGIN=(0.0,13.0,62.0)
+
 LOD_DIST={
     'island':1800,'mountain':1500,'palace':1100,'gate':850,'bridge':750,
     'tower_round':850,'tower_spire':1000,'wall':620,'wing':750,'stair':480,
@@ -119,7 +164,7 @@ def make_layout():
     add('pavilion',0,68,terrain_height(0,68),0,tag='upper rose pavilion')
 
     # Processional stair and a broad mosaic court.
-    add('stair',0,-101,terrain_height(0,-116),0,tag='great ceremonial staircase')
+    add('stair',0,-111,terrain_height(0,-137),0,tag='great ceremonial staircase')
     for x in (-32,0,32): add('plaza',x,-42,61.5,0,tag='palace forecourt paving')
     for x in (-48,-16,16,48): add('plaza',x,49,61.5,0,tag='upper palace terrace')
     # Tiered fountains, heraldic statuary and restrained lighting in the royal gardens.
@@ -183,6 +228,12 @@ def write_layout(objects,lights):
         rows.append('  { model=%s, x=%.2f, y=%.2f, z=%.2f, rz=%.1f, scale=%.3f, tag=%s },' %
                     (lua_quote(o['model']),o['x'],o['y'],o['z'],o['rz'],o['scale'],lua_quote(o['tag'])))
     rows.append('}')
+    rows += ['RC_ROOMS = {']
+    ox,oy,oz=PALACE_LAYOUT_ORIGIN
+    for key,name,x,y,z,rz in ROOMS_LOCAL:
+        rows.append('  { id=%s, name=%s, x=%.2f, y=%.2f, z=%.2f, rz=%.1f },' %
+                    (lua_quote(key),lua_quote(name),ox+x,oy+y,oz+z,rz))
+    rows.append('}')
     rows += ['RC_LIGHTS = {']
     for x,y,z,r,red,green,blue in lights:
         rows.append('  { x=%.2f, y=%.2f, z=%.2f, size=%.2f, r=%d, g=%d, b=%d },' %
@@ -192,16 +243,17 @@ def write_layout(objects,lights):
 
 
 def write_meta(models):
-    files=['files/royal_citadel.txd']
+    files=['files/royal_citadel.txd','wet.fx','water.fx',
+           'files/maps/wetness_mask.png','files/maps/marble_roughness.png','files/maps/water_normal.png']
     for d in models:
         files.extend((d['dff'],d['lod']))
         if d['collision']: files.append(d['col'])
     lines=['<!-- Royal Citadel | standalone MTA:SA 1.6+ resource -->','<meta>',
-           '  <info author="Royal Citadel build" name="Royal Citadel" version="1.0.1" type="map"',
-           '        description="Modular highland royal palace, fortified city, gardens and mountain approach." />',
+           '  <info author="Royal Citadel build" name="Royal Citadel" version="1.2.0" type="map"',
+           '        description="Axial Gothic royal citadel with accessible palace rooms and screen-space water/rain reflections." />',
            '  <min_mta_version client="1.6.0-9.22676" />',
            '  <script src="models.lua" type="client" />',
-           '  <script src="layout.lua" type="client" />',
+           '  <script src="layout.lua" type="shared" />',
            '  <script src="client.lua" type="client" />',
            '  <script src="server.lua" type="server" />']
     lines += ['  <file src="%s" />'%p for p in files]
@@ -212,6 +264,8 @@ def write_meta(models):
 def verify_assets(models,objects,txd_bytes):
     assert len(objects)>100, 'The environment should have over one hundred modular placements.'
     assert len(models)==len(BUILDERS), 'Model manifest does not cover all builders.'
+    assert len(ROOMS_LOCAL)>=10, 'The palace must expose a named multi-room interior.'
+    assert os.path.isfile(os.path.join(RESOURCE,'wet.fx')) and os.path.isfile(os.path.join(RESOURCE,'water.fx'))
     assert txd_bytes[:4]==b'\x16\0\0\0', 'TXD root chunk is not a RenderWare texture dictionary.'
     for d in models:
         for rel in (d['dff'],d['lod']):
@@ -235,11 +289,18 @@ def main():
         for filename in os.listdir(directory):
             path=os.path.join(directory,filename)
             if os.path.isfile(path) and filename.endswith(ext): os.remove(path)
-    texture_root=os.path.join(HERE,'assets','albedo')
+    texture_root=os.path.join(HERE,'assets')
     txd,texture_data=prepare_txd(texture_root,TEXTURE_SOURCES,512)
+    map_dir=os.path.join(FILES,'maps'); os.makedirs(map_dir,exist_ok=True)
+    shader_maps={
+        'wetness_mask.png':'assets/ai_textures/batch_02/09_rain_wetness_puddle_mask.png',
+        'marble_roughness.png':'assets/ai_textures/batch_02/08_polished_marble_roughness_map.png',
+        'water_normal.png':'assets/ai_textures/batch_02/10_courtyard_water_normal_map.png',
+    }
+    for dest,src in shader_maps.items(): shutil.copyfile(os.path.join(HERE,src),os.path.join(map_dir,dest))
     txd_path=os.path.join(FILES,'royal_citadel.txd')
     with open(txd_path,'wb') as f: f.write(txd)
-    print('AI albedo TXD: %d textures, %.2f MB' % (len(texture_data),len(txd)/1048576))
+    print('AI texture TXD: %d textures, %.2f MB' % (len(texture_data),len(txd)/1048576))
     models=[]; report=[]
     for i,name in enumerate(BUILDERS):
         mesh,boxes,colmesh,collision=build_asset(name,False)
@@ -269,7 +330,10 @@ def main():
     verify_assets(models,objects,txd)
     report_obj={'project':'Royal Citadel for MTA:SA 1.6+','world_origin':WORLD,'models':report,
                 'model_count':len(models),'placement_count':len(objects),'light_coronas':len(lights),
-                'ai_albedo_textures':[n for n,_ in TEXTURE_SOURCES],'texture_size':512,
+                'room_count':len(ROOMS_LOCAL),'interior_entry':'open 11 m portal with 30 shallow collision-tested steps',
+                'reflection_system':'wet.fx + water.fx screen-source reflections with graceful fallback',
+                'ai_textures':[spec[0] for spec in TEXTURE_SOURCES],'texture_count':len(TEXTURE_SOURCES),
+                'texture_dimensions':'512 square, with purpose-made 512x256 and 256x512 maps',
                 'build_seconds':round(time.time()-t0,2)}
     with open(os.path.join(HERE,'build-report.json'),'w',encoding='utf8') as f: json.dump(report_obj,f,indent=2)
     print('\nBuilt %d modular model types, %d placements, %d light coronas in %.1fs.' %

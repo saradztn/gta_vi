@@ -147,6 +147,24 @@ def read_txd(path):
     return names
 
 
+def read_collision_boxes(path):
+    data=open(path,'rb').read()
+    nsphere,nbox,nface=struct.unpack_from('<HHH',data,8+22+2+10*4)
+    offsets=struct.unpack_from('<6I',data,8+22+2+10*4+12)
+    off=4+offsets[1]
+    boxes=[]
+    for i in range(nbox):
+        vals=struct.unpack_from('<6f',data,off+i*28)
+        boxes.append((vals[:3],vals[3:]))
+    return boxes
+
+
+def collision_blocks(boxes, region):
+    x0,x1,y0,y1,z0,z1=region
+    return [(lo,hi) for lo,hi in boxes
+            if lo[0]<x1 and hi[0]>x0 and lo[1]<y1 and hi[1]>y0 and lo[2]<z1 and hi[2]>z0]
+
+
 def main():
     global passed
     try:
@@ -154,13 +172,15 @@ def main():
         listed={e.get('src') for e in meta.findall('file')}
         scripts={e.get('src') for e in meta.findall('script')}
         all_files=set()
-        for root,dirs,files in os.walk(FILES):
-            for f in files: all_files.add(os.path.relpath(os.path.join(root,f),RES).replace(os.sep,'/'))
+        for root,dirs,files in os.walk(RES):
+            for f in files:
+                rel=os.path.relpath(os.path.join(root,f),RES).replace(os.sep,'/')
+                if rel.endswith(('.dff','.col','.txd','.fx','.png')): all_files.add(rel)
         check(all(x and os.path.isfile(os.path.join(RES,x)) for x in listed|scripts),'all meta.xml assets exist')
         check(listed==all_files,'meta.xml file list exactly covers compiled assets')
         check({'client.lua','server.lua','models.lua','layout.lua'}<=scripts,'client/server/data scripts are declared')
         txd_names=read_txd(os.path.join(RES,'files','royal_citadel.txd'))
-        check(len(txd_names)==9,'TXD contains nine AI-generated textures')
+        check(len(txd_names)==39,'TXD contains 39 albedo textures, including the interior material set')
         models=[]
         for path in sorted(os.listdir(os.path.join(RES,'files','dff'))):
             if not path.endswith('.dff'): continue
@@ -191,6 +211,60 @@ def main():
         layout=open(os.path.join(RES,'layout.lua'),encoding='utf8').read()
         check('RC_WORLD = { x=2403.37817, y=3569.52466, z=37.82248 }' in layout,
               'world origin uses the requested coordinates')
+        room_pattern=r'\{ id="([a-z_]+)", name="[^"]+", x=([\d.-]+), y=([\d.-]+), z=([\d.-]+), rz='
+        room_entries=[(m.group(1),*(float(m.group(i)) for i in (2,3,4))) for m in re.finditer(room_pattern,layout)]
+        room_ids=[r[0] for r in room_entries]
+        check(len(room_ids)==10,'generated shared layout exposes exactly ten named palace rooms')
+        check({'great_hall','throne_room','library','chapel','banquet_hall','bedchamber'}<=set(room_ids),
+              'Great Hall, throne room, library, chapel, banquet hall and bedchamber are named')
+        client=open(os.path.join(RES,'client.lua'),encoding='utf8').read()
+        server=open(os.path.join(RES,'server.lua'),encoding='utf8').read()
+        required_maps={'wetness_mask.png','marble_roughness.png','water_normal.png'}
+        map_dir=os.path.join(FILES,'maps')
+        check(required_maps<=set(os.listdir(map_dir)) and 'marble_roughness.png' in client,
+              'wetness, marble-roughness and water-normal maps are packaged and bound by the client')
+        wet=open(os.path.join(RES,'wet.fx'),encoding='utf8').read()
+        water=open(os.path.join(RES,'water.fx'),encoding='utf8').read()
+        check('engineApplyShaderToWorldTexture' in client and 'dxCreateScreenSource' in client,
+              'client reflection pipeline binds target surfaces to a live screen source')
+        check('reflect(V, Nw)' in wet and 'gWetMask' in wet and 'gRoughnessMap' in wet and 'gScreen' in wet,
+              'wet shader contains screen-space reflection plus generated wetness/roughness map inputs')
+        check('reflect(V, N)' in water and 'gNormalMap' in water and 'gScreen' in water,
+              'water shader contains screen-space reflection and normal-map input')
+        check('/royalroom' in server and 'RC_ROOMS' in server and 'royalenter' in server,
+              'server exposes room navigation and direct palace entrance fallback')
+        palace_boxes=read_collision_boxes(os.path.join(FILES,'col','palace.col'))
+        palace_origin=re.search(r'\{ model="palace", x=([\d.-]+), y=([\d.-]+), z=([\d.-]+),',layout)
+        if palace_origin and len(room_entries)==10:
+            ox,oy,oz=(float(palace_origin.group(i)) for i in (1,2,3))
+            clear=[]
+            for _,world_x,world_y,world_z in room_entries:
+                x,y,z=world_x-ox,world_y-oy,world_z-oz
+                clear.append(not collision_blocks(palace_boxes,(x-0.35,x+0.35,y-0.35,y+0.35,z,z+1.75)))
+            check(all(clear),'all ten room teleport positions leave a player-sized collision-free standing volume')
+        else:
+            check(False,'palace origin and ten room positions are parseable for spawn-clearance checks')
+        gate_boxes=read_collision_boxes(os.path.join(FILES,'col','gate.col'))
+        wing_boxes=read_collision_boxes(os.path.join(FILES,'col','wing.col'))
+        check(not collision_blocks(palace_boxes,(-5.3,5.3,-34.9,-33.1,9.25,20.5)),
+              'palace entrance collision leaves an 11 m open player portal')
+        room_doors=[]
+        for x in (-17,17):
+            for y in (-20,-4,12): room_doors.append((x-0.55,x+0.55,y-1.9,y+1.9,9.25,18.5))
+        for x in (-21,21):
+            for y in (-20,-4,12,26): room_doors.append((x-0.55,x+0.55,y-2.0,y+2.0,9.25,18.5))
+        for y in (-12,4,20):
+            for x in (-31,31): room_doors.append((x-1.9,x+1.9,y-0.55,y+0.55,9.25,18.5))
+        room_doors.append((-4.7,4.7,19.5,20.5,9.25,20.0))
+        for x in (-17,17): room_doors.append((x-0.55,x+0.55,24.5,27.5,9.25,18.0))
+        for x in (-39.5,39.5): room_doors.append((x-0.5,x+0.5,24.5,27.5,9.25,17.5))
+        check(len(room_doors)==25 and all(not collision_blocks(palace_boxes,door) for door in room_doors),
+              '25 room-to-room and corridor portals are clear in palace collision')
+        check(not collision_blocks(gate_boxes,(-5.5,5.5,-8.0,8.0,12.0,26.0)),
+
+              'outer gate collision leaves the central arch traversable')
+        check(not collision_blocks(wing_boxes,(-3.5,3.5,-13.6,-12.4,3.2,17.5)),
+              'annex entry collision leaves a walkable opening')
         placement_count=len(re.findall(r'\{ model="',layout))
         check(placement_count>150,'generated layout has a large modular scene (%d placements)'%placement_count)
         check(os.path.isfile(os.path.join(HERE,'build-report.json')),'build report exists')

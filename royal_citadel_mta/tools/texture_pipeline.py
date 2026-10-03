@@ -106,6 +106,57 @@ def resize_box_rgb(rgb: bytearray, width: int, height: int, target: int):
     return rgb
 
 
+def resize_area_rgb(rgb: bytearray, width: int, height: int, target_width: int, target_height: int):
+    """Center-crop to a requested aspect ratio, then area-resample to a D3D-friendly size."""
+    if (width,height)==(target_width,target_height): return rgb
+    target_aspect=target_width/target_height
+    source_aspect=width/height
+    if source_aspect>target_aspect:
+        crop_h=float(height); crop_w=crop_h*target_aspect
+        x0=(width-crop_w)*0.5; y0=0.0
+    else:
+        crop_w=float(width); crop_h=crop_w/target_aspect
+        x0=0.0; y0=(height-crop_h)*0.5
+    sx=crop_w/target_width; sy=crop_h/target_height
+    out=bytearray(target_width*target_height*3)
+    for ty in range(target_height):
+        ay=y0+ty*sy; by=y0+(ty+1)*sy
+        iy0=int(math.floor(ay)); iy1=int(math.ceil(by))
+        for tx in range(target_width):
+            ax=x0+tx*sx; bx=x0+(tx+1)*sx
+            ix0=int(math.floor(ax)); ix1=int(math.ceil(bx))
+            sums=[0.0,0.0,0.0]; total=0.0
+            for iy in range(iy0,iy1):
+                wy=max(0.0,min(by,iy+1.0)-max(ay,float(iy)))
+                if wy<=0: continue
+                for ix in range(ix0,ix1):
+                    wx=max(0.0,min(bx,ix+1.0)-max(ax,float(ix)))
+                    weight=wx*wy
+                    if weight<=0: continue
+                    pos=(min(height-1,iy)*width+min(width-1,ix))*3
+                    sums[0]+=rgb[pos]*weight; sums[1]+=rgb[pos+1]*weight; sums[2]+=rgb[pos+2]*weight
+                    total+=weight
+            dst=(ty*target_width+tx)*3
+            if total:
+                out[dst]=int(sums[0]/total+0.5); out[dst+1]=int(sums[1]/total+0.5); out[dst+2]=int(sums[2]/total+0.5)
+    return out
+
+
+def half_rgb(rgb: bytearray, width: int, height: int, target_width: int, target_height: int):
+    """Box-filter a mip level, allowing one axis to remain 1 pixel wide/high."""
+    out=bytearray(target_width*target_height*3)
+    for y in range(target_height):
+        ys=range(min(height-1,y*2),min(height,(y+1)*2))
+        for x in range(target_width):
+            xs=range(min(width-1,x*2),min(width,(x+1)*2))
+            samples=[(rgb[(sy*width+sx)*3],rgb[(sy*width+sx)*3+1],rgb[(sy*width+sx)*3+2]) for sy in ys for sx in xs]
+            dst=(y*target_width+x)*3; n=max(1,len(samples))
+            out[dst]=(sum(q[0] for q in samples)+n//2)//n
+            out[dst+1]=(sum(q[1] for q in samples)+n//2)//n
+            out[dst+2]=(sum(q[2] for q in samples)+n//2)//n
+    return out
+
+
 def _to565(rgb):
     r,g,b=rgb
     return ((r*31+127)//255<<11)|((g*63+127)//255<<5)|((b*31+127)//255)
@@ -165,8 +216,8 @@ def mip_chain(rgb: bytearray, width: int, height: int):
         levels.append((width,height,compress_dxt1(rgb,width,height)))
         if width==1 and height==1: break
         nw=max(1,width//2); nh=max(1,height//2)
-        if nw==width or nh==height: break
-        rgb=resize_box_rgb(rgb,width,height,nw)
+        if nw==width and nh==height: break
+        rgb=half_rgb(rgb,width,height,nw,nh)
         width,height=nw,nh
     return levels
 
@@ -193,12 +244,18 @@ def build_txd(textures: list[dict]) -> bytes:
     return rw_chunk(ID_TEXDICT,payload)
 
 
-def prepare_txd(source_dir: str, source_map: list[tuple[str,str]], target_size=512):
+def prepare_txd(source_dir: str, source_map: list[tuple], target_size=512):
     textures=[]
-    for txd_name,filename in source_map:
-        path=os.path.join(source_dir,filename)
+    for spec in source_map:
+        if len(spec)==2:
+            name,filename=spec; target_width=target_height=target_size
+        elif len(spec)==4:
+            name,filename,target_width,target_height=spec
+        else:
+            raise ValueError('texture source must be (name,file) or (name,file,width,height)')
+        path=filename if os.path.isabs(filename) else os.path.join(source_dir,filename)
         width,height,rgb=read_png_rgb(path)
-        rgb=resize_box_rgb(rgb,width,height,target_size)
-        levels=mip_chain(rgb,target_size,target_size)
-        textures.append(dict(name=txd_name,width=target_size,height=target_size,levels=levels))
+        rgb=resize_area_rgb(rgb,width,height,target_width,target_height)
+        levels=mip_chain(rgb,target_width,target_height)
+        textures.append(dict(name=name,width=target_width,height=target_height,levels=levels))
     return build_txd(textures),textures

@@ -123,7 +123,7 @@ RC_OBJECTS = {
   { model="pavilion", x=-67.00, y=-45.00, z=62.00, rz=0.0, scale=1.000, tag="west garden pavilion" },
   { model="pavilion", x=67.00, y=-45.00, z=62.00, rz=0.0, scale=1.000, tag="east garden pavilion" },
   { model="pavilion", x=0.00, y=68.00, z=62.00, rz=0.0, scale=1.000, tag="upper rose pavilion" },
-  { model="stair", x=0.00, y=-101.00, z=49.44, rz=0.0, scale=1.000, tag="great ceremonial staircase" },
+  { model="stair", x=0.00, y=-111.00, z=43.16, rz=0.0, scale=1.000, tag="great ceremonial staircase" },
   { model="plaza", x=-32.00, y=-42.00, z=61.50, rz=0.0, scale=1.000, tag="palace forecourt paving" },
   { model="plaza", x=0.00, y=-42.00, z=61.50, rz=0.0, scale=1.000, tag="palace forecourt paving" },
   { model="plaza", x=32.00, y=-42.00, z=61.50, rz=0.0, scale=1.000, tag="palace forecourt paving" },
@@ -207,6 +207,18 @@ RC_OBJECTS = {
   { model="waterfall", x=218.00, y=-54.00, z=0.00, rz=180.0, scale=1.000, tag="cliff waterfall" },
   { model="waterfall", x=218.00, y=44.00, z=0.00, rz=180.0, scale=1.000, tag="cliff waterfall" },
   { model="bridge", x=129.00, y=8.00, z=49.42, rz=90.0, scale=0.480, tag="east ravine bridge" },
+}
+RC_ROOMS = {
+  { id="great_hall", name="Great Hall", x=0.00, y=8.00, z=73.20, rz=180.0 },
+  { id="throne_room", name="Throne Room", x=0.00, y=35.00, z=73.20, rz=180.0 },
+  { id="armory", name="Armory", x=-31.00, y=-8.00, z=73.20, rz=90.0 },
+  { id="library", name="Royal Library", x=-31.00, y=9.00, z=73.20, rz=90.0 },
+  { id="chapel", name="Royal Chapel", x=-31.00, y=30.00, z=73.20, rz=90.0 },
+  { id="west_solar", name="West Solar", x=-31.00, y=39.00, z=73.20, rz=90.0 },
+  { id="banquet_hall", name="Banquet Hall", x=31.00, y=-14.00, z=73.20, rz=270.0 },
+  { id="council", name="Council Chamber", x=31.00, y=14.00, z=73.20, rz=270.0 },
+  { id="treasury", name="Treasury", x=31.00, y=25.00, z=73.20, rz=270.0 },
+  { id="bedchamber", name="Royal Bedchamber", x=31.00, y=35.00, z=73.20, rz=270.0 },
 }
 RC_LIGHTS = {
   { x=-90.00, y=-68.00, z=71.04, size=5.50, r=255, g=176, b=102 },

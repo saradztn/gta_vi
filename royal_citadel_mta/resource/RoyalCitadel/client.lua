@@ -11,6 +11,15 @@ local sceneReady = false
 local sceneVisible = false
 local buildFailed = false
 local txdElement
+local updateReflections
+local reflection = { enabled=true, active=false, screen=nil, wet=nil, water=nil,
+                     targets={wet={}, water={}}, bindings={}, rain=0.55, failure=nil,
+                     wetMask=nil, waterNormal=nil, roughnessMap=nil }
+local originalRainLevel
+if type(getRainLevel)=="function" then
+    local ok,value=pcall(getRainLevel)
+    if ok then originalRainLevel=value end
+end
 
 local function log(message, r, g, b)
     outputChatBox("#D7B56D[Royal Citadel] #FFFFFF" .. tostring(message), r or 232, g or 222, b or 205, true)
@@ -122,7 +131,106 @@ local function setStatic(obj, collisions)
     if type(setElementDimension) == "function" then setElementDimension(obj, 0) end
 end
 
+local function unbindReflections()
+    if type(engineRemoveShaderFromWorldTexture)=="function" then
+        for i=#reflection.bindings,1,-1 do
+            local b=reflection.bindings[i]
+            pcall(engineRemoveShaderFromWorldTexture,b.shader,b.texture,b.target)
+        end
+    end
+    reflection.bindings={}
+end
+
+local function stopReflections()
+    if reflection.active then removeEventHandler("onClientHUDRender",root,updateReflections) end
+    reflection.active=false
+    unbindReflections()
+    for _,key in ipairs({"wet","water","screen","wetMask","waterNormal","roughnessMap"}) do
+        local e=reflection[key]
+        if e and isElement(e) then destroyElement(e) end
+        reflection[key]=nil
+    end
+end
+
+local function bindSurface(shader, texture, target)
+    if not shader or not isElement(target) then return false end
+    local ok,result=pcall(engineApplyShaderToWorldTexture,shader,texture,target)
+    if ok and result then
+        reflection.bindings[#reflection.bindings+1]={shader=shader,texture=texture,target=target}
+        return true
+    end
+    return false
+end
+
+updateReflections = function()
+    if not reflection.screen or not isElement(reflection.screen) then return end
+    dxUpdateScreenSource(reflection.screen)
+    if reflection.wet and isElement(reflection.wet) then
+        dxSetShaderValue(reflection.wet,"gScreen",reflection.screen)
+        dxSetShaderValue(reflection.wet,"gWet",reflection.rain)
+    end
+    if reflection.water and isElement(reflection.water) then
+        dxSetShaderValue(reflection.water,"gScreen",reflection.screen)
+    end
+end
+
+local function startReflections()
+    if not reflection.enabled or reflection.active or not sceneVisible then return false end
+    if type(dxCreateScreenSource)~="function" or type(dxCreateShader)~="function" or
+       type(engineApplyShaderToWorldTexture)~="function" then
+        reflection.failure="screen-space shaders are unavailable"
+        return false
+    end
+    local sw,sh=guiGetScreenSize()
+    local rw,rh=math.max(320,math.floor(sw*0.5)),math.max(240,math.floor(sh*0.5))
+    reflection.screen=dxCreateScreenSource(rw,rh)
+    reflection.wetMask=dxCreateTexture("files/maps/wetness_mask.png")
+    reflection.waterNormal=dxCreateTexture("files/maps/water_normal.png")
+    reflection.roughnessMap=dxCreateTexture("files/maps/marble_roughness.png")
+    if not reflection.screen then reflection.failure="could not create a screen source" stopReflections() return false end
+    local wet,wetTech=dxCreateShader("wet.fx")
+    if wet and wetTech=="fallback" then destroyElement(wet) wet=false end
+    local water,waterTech=dxCreateShader("water.fx")
+    if water and waterTech=="fallback" then destroyElement(water) water=false end
+    reflection.wet,reflection.water=wet,water
+    if wet and isElement(reflection.wetMask) then
+        dxSetShaderValue(wet,"gWetMask",reflection.wetMask)
+        if isElement(reflection.roughnessMap) then dxSetShaderValue(wet,"gRoughnessMap",reflection.roughnessMap) end
+        dxSetShaderValue(wet,"gScreen",reflection.screen)
+        dxSetShaderValue(wet,"gPix",1/rw,1/rh)
+        dxSetShaderValue(wet,"gWet",reflection.rain)
+    end
+    if water and isElement(reflection.waterNormal) then
+        dxSetShaderValue(water,"gNormalMap",reflection.waterNormal)
+        dxSetShaderValue(water,"gScreen",reflection.screen)
+        dxSetShaderValue(water,"gPix",1/rw,1/rh)
+    end
+    local applied=0
+    if wet then
+        for _,obj in ipairs(reflection.targets.wet) do
+            if bindSurface(wet,"paving",obj) then applied=applied+1 end
+        end
+    end
+    if water then
+        for _,obj in ipairs(reflection.targets.water) do
+            if bindSurface(water,"moat_surface",obj) then applied=applied+1 end
+        end
+    end
+    if applied>0 then
+        addEventHandler("onClientHUDRender",root,updateReflections)
+        reflection.active=true
+        reflection.failure=nil
+        log("Screen-space reflections active on courtyard paving, moat and fountain water. /royalreflect toggles them.",180,225,255)
+        return true
+    end
+    reflection.failure="shaders did not bind to the custom water/paving surfaces"
+    stopReflections()
+    return false
+end
+
 local function destroyScene()
+    stopReflections()
+    reflection.targets={wet={},water={}}
     for i = #liveObjects, 1, -1 do
         if isElement(liveObjects[i]) then destroyElement(liveObjects[i]) end
     end
@@ -148,6 +256,8 @@ local function createScene()
                     setObjectScale(hi, item.scale)
                 end
                 liveObjects[#liveObjects + 1] = hi
+                if item.model=="plaza" then reflection.targets.wet[#reflection.targets.wet+1]=hi end
+                if item.model=="moat" or item.model=="fountain" then reflection.targets.water[#reflection.targets.water+1]=hi end
                 created = created + 1
                 local lo = createObject(ids.low, x, y, z, 0, 0, item.rz, true)
                 if lo then
@@ -184,6 +294,7 @@ local function createScene()
         end
     end
     sceneVisible = true
+    if reflection.enabled then startReflections() end
     log(string.format("Scene visible: %d placements, %d creation errors, %d warm lantern coronas.",
                       created, failed, #liveLights), failed > 0 and 255 or 232, failed > 0 and 170 or 222, failed > 0 and 90 or 205)
     return failed == 0
@@ -204,12 +315,36 @@ addCommandHandler("royalhide", function()
     log("Local scene hidden. Use /royalshow to restore it.")
 end)
 
+addCommandHandler("royalreflect", function(_,arg)
+    local value=tonumber(arg)
+    if value==nil then value=reflection.enabled and 0 or 1 end
+    reflection.enabled=value~=0
+    if reflection.enabled then
+        if sceneVisible then startReflections() end
+        log(reflection.active and "Reflections enabled." or ("Reflections unavailable: "..tostring(reflection.failure or "unknown reason")),reflection.active and 170 or 255,reflection.active and 230 or 175,reflection.active and 255 or 110)
+    else
+        stopReflections()
+        log("Reflections disabled; the map remains playable.")
+    end
+end)
+
+addCommandHandler("royalrain", function(_,arg)
+    local value=tonumber(arg)
+    if not value then log("Usage: /royalrain <0.0-1.0>",255,190,120) return end
+    reflection.rain=math.max(0,math.min(1,value))
+    if type(setRainLevel)=="function" then pcall(setRainLevel,reflection.rain) end
+    if reflection.wet and isElement(reflection.wet) then dxSetShaderValue(reflection.wet,"gWet",reflection.rain) end
+    log(string.format("Local rain / wet reflection level: %.2f",reflection.rain))
+end)
+
 addCommandHandler("royalinfo", function()
-    log(string.format("%s | %d object placements | AI albedo TXD | modular COL3 + paired LOD.",
-                      sceneVisible and "visible" or "hidden", #RC_OBJECTS))
+    log(string.format("%s | %d placements | %d named rooms | reflections %s | /royalrooms /royalroom <id>.",
+                      sceneVisible and "visible" or "hidden", #RC_OBJECTS, #RC_ROOMS,
+                      reflection.active and "ON" or "OFF"))
 end)
 
 addEventHandler("onClientResourceStop", resourceRoot, function()
     destroyScene()
     releaseRequested()
+    if originalRainLevel~=nil and type(setRainLevel)=="function" then pcall(setRainLevel,originalRainLevel) end
 end)
