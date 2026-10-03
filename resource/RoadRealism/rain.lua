@@ -279,8 +279,8 @@ function RR.Rain.start()
     RA.savedWeather = getWeather()
     RA.savedRain = getRainLevel()
     RA.lastStreak = getTickCount()
-    RA.material = dxCreateTexture(ROAD_SHARED.rainStreak, 'argb', true, 'clamp')
-    RA.splashMaterial = dxCreateTexture(ROAD_SHARED.splash, 'argb', true, 'clamp')
+    RA.material = dxCreateTexture(ROAD_SHARED.rainStreak, 'argb', true)
+    RA.splashMaterial = dxCreateTexture(ROAD_SHARED.splash, 'argb', true)
     if not RA.material then
         RR.Warn('the rain streak texture could not be loaded - no 3D rain')
     end

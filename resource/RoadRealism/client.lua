@@ -84,7 +84,7 @@ RR.Tex = { shared = {}, mats = {}, marks = {} }
 function RR.Tex.loadShared()
     local n, bad = 0, {}
     for key, path in pairs(ROAD_SHARED) do
-        local t = dxCreateTexture(path, key == 'puddle' and 'dxt5' or 'argb', true, 'wrap')
+        local t = dxCreateTexture(path, key == 'puddle' and 'dxt5' or 'argb', true)
         if t then
             RR.Tex.shared[key] = t
             n = n + 1
@@ -110,8 +110,8 @@ function RR.Tex.material(matKey)
         RR.Tex.mats[matKey] = false
         return false
     end
-    local a = dxCreateTexture(m.albedo, 'dxt1', true, 'wrap')
-    local k = dxCreateTexture(m.mask, 'dxt5', true, 'wrap')
+    local a = dxCreateTexture(m.albedo, 'dxt1', true)
+    local k = dxCreateTexture(m.mask, 'dxt5', true)
     if not (a and k) then
         if a and isElement(a) then
             destroyElement(a)
@@ -141,7 +141,7 @@ function RR.Tex.marking(markKey)
         RR.Tex.marks[markKey] = false
         return false
     end
-    local t = dxCreateTexture(mk.file, 'dxt5', true, 'wrap')
+    local t = dxCreateTexture(mk.file, 'dxt5', true)
     if not t then
         RR.Warn('marking ' .. markKey .. ' could not be loaded (' .. mk.file .. ')')
         RR.Tex.marks[markKey] = false

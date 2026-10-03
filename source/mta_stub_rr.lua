@@ -193,6 +193,15 @@ end
 function dxCreateTexture(path, fmt, mip, ttype)
     count('dxCreateTexture')
     if not T.files[path] then return false end
+    fmt = fmt or 'argb'
+    -- MTA: format must be a pixel format, NOT an address mode
+    if fmt ~= 'argb' and fmt ~= 'dxt1' and fmt ~= 'dxt3' and fmt ~= 'dxt5' then
+        return false
+    end
+    -- MTA: 4th arg is textureType ("2d"/"3d"/"cube"); anything else is a hard failure
+    if ttype ~= nil and ttype ~= '2d' and ttype ~= '3d' and ttype ~= 'cube' then
+        return false
+    end
     local e = newEl('texture', { path = path })
     return e
 end

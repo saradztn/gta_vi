@@ -19,7 +19,7 @@ local function allowed(player)
     if not account or isGuestAccount(account) then
         return false
     end
-    return hasObjectPermissionTo(account, 'function.setWeather', false)
+    return hasObjectPermissionTo(getAccountName(account), 'function.setWeather', false)
 end
 
 local function reply(player, msg)
@@ -28,7 +28,7 @@ end
 
 local function cmdRain(player, cmd, level)
     if not allowed(player) then
-        reply(player, 'you are not allowed to change the weather')
+        -- not an admin: the client-side command already applied the rain locally, so stay quiet
         return
     end
     if not level or string.lower(level) == 'off' then
