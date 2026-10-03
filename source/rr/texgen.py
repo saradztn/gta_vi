@@ -278,8 +278,8 @@ def bake_puddle():
     basin = clamp01(basin + warp * basin)
     # long shallow sheets along one axis (road camber / drainage direction)
     sheet = clamp01(0.5 + 0.5 * N.bnoise(h, w, w * 0.55, w * 0.10, 78))
-    m = clamp01(0.70 * basin + 0.55 * sheet * basin + 0.20 * N.smooth(0.35, 0.85, ID))
-    m = N.smooth(0.28, 0.72, m)
+    m = clamp01(0.70 * basin + 0.35 * sheet * basin + 0.15 * N.smooth(0.35, 0.85, ID))
+    m = N.smooth(0.75, 0.95, m)   # sparse: only genuine depressions hold standing water
     # rim of every puddle (the wet line the water leaves behind) from the mask gradient
     gx = np.roll(m, -1, 1) - np.roll(m, 1, 1)
     gy = np.roll(m, -1, 0) - np.roll(m, 1, 0)

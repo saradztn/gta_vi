@@ -262,10 +262,10 @@ float4 RoadPS(PSInput IN) : COLOR0
     // a water film both darkens the diffuse (total internal reflection traps the light) and
     // collapses the roughness - it is NOT just "darker asphalt"
     float wetLocal = saturate(gWet * (1.0 - gWetVar * (macro.r - 0.5) * 2.0));
-    float pudMask = sstep(1.0 - gPuddleLevel * 0.95, 1.0 - gPuddleLevel * 0.95 + 0.25, pud.r);
+    float pudMask = sstep(0.45, 0.70, pud.r) * saturate(gPuddleLevel * 1.5);
     float film = saturate(max(wetLocal, pudMask)) * (0.55 + 0.45 * pudMask);
     albedo *= lerp(1.0, 0.62, film);
-    rough = lerp(rough, lerp(0.09, 0.035, pudMask), film);
+    rough = lerp(rough, lerp(0.12, 0.05, pudMask), film);
     f0 = lerp(f0, 0.02, film);
     ao *= lerp(1.0, 0.85, film);
     // the puddle surface is not flat: the rim channel ripples the reflection
@@ -318,7 +318,7 @@ float4 RoadPS(PSInput IN) : COLOR0
     col += spec + gLightColor.rgb * retro * 0.65;
 
     // ---------------------------------------------------------------- screen space reflection
-    float reflAmt = gReflectStrength * film * pow(1.0 - saturate(dot(N, V)), gReflectAnglePow) * 1.6;
+    float reflAmt = gReflectStrength * film * pow(1.0 - saturate(dot(N, V)), gReflectAnglePow) * 1.25;
     if (reflAmt > 0.004)
     {
         float3 R = 2.0 * dot(N, V) * N - V;
