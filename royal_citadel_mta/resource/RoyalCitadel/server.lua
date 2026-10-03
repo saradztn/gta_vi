@@ -1,7 +1,7 @@
 -- Server-side visit/return commands. The generated scene is client-local, so this
 -- script only teleports the requesting player and never modifies world resources.
-local WORLD_X, WORLD_Y, WORLD_Z = 2500.0, 2500.0, 0.0
-local START_X, START_Y, START_Z = 0.0, -49.0, 64.0
+local WORLD_X, WORLD_Y, WORLD_Z = 2403.37817, 3569.52466, 37.82248
+local START_X, START_Y, START_Z = 0.0, -49.0, 64.2
 local returnState = {}
 
 local function tell(player, text, r, g, b)

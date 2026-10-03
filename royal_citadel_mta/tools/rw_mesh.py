@@ -213,8 +213,10 @@ def build_dff(name: str, mesh: Mesh) -> bytes:
     lo,hi=mesh.bounds()
     center=tuple((lo[i]+hi[i])*0.5 for i in range(3))
     radius=max(math.sqrt(sum((p[i]-center[i])**2 for i in range(3))) for p in mesh.positions)
-    # GTA SA RenderWare geometry flags: positions, one UV set, normals, material modulation.
-    flags=0x02|0x04|0x10|0x40|(1<<16)
+    # GTA SA RenderWare geometry flags: positions, one UV set, normals, DYNAMIC
+    # WORLD LIGHTING, material modulation.  Without 0x20 (LIGHT), an un-prelit
+    # geometry is nearly black at night in MTA even though its TXD loaded correctly.
+    flags=0x02|0x04|0x10|0x20|0x40|(1<<16)
     data=struct.pack('<IIII',flags,len(mesh.triangles),n,1)
     for u,v in mesh.uvs:
         data += struct.pack('<ff',u,v)

@@ -63,6 +63,7 @@ def read_dff(path):
     geom=geom_chunks[0]; sub=list(children(data,geom[3],geom[4]))
     st=next(c for c in sub if c[0]==1)
     flags,ntris,nverts,nmorph=struct.unpack_from('<IIII',data,st[3])
+    if not (flags & 0x20): raise ValueError('DFF dynamic world lighting flag is missing')
     if nverts==0 or ntris==0 or nmorph!=1: raise ValueError('empty or unexpected DFF geometry')
     uvsets=(flags>>16)&0xff
     if uvsets<1: raise ValueError('DFF has no UV set')
@@ -188,6 +189,8 @@ def main():
                     a,b,c,material,flag=struct.unpack_from('<HHHBB',data,4+off_face+i*8)
                     if max(a,b,c)>=nv: raise ValueError(name+': COL3 face index out of range')
         layout=open(os.path.join(RES,'layout.lua'),encoding='utf8').read()
+        check('RC_WORLD = { x=2403.37817, y=3569.52466, z=37.82248 }' in layout,
+              'world origin uses the requested coordinates')
         placement_count=len(re.findall(r'\{ model="',layout))
         check(placement_count>150,'generated layout has a large modular scene (%d placements)'%placement_count)
         check(os.path.isfile(os.path.join(HERE,'build-report.json')),'build report exists')

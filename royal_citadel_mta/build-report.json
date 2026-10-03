@@ -1,9 +1,9 @@
 {
   "project": "Royal Citadel for MTA:SA 1.6+",
   "world_origin": {
-    "x": 2500.0,
-    "y": 2500.0,
-    "z": 0.0
+    "x": 2403.37817,
+    "y": 3569.52466,
+    "z": 37.82248
   },
   "models": [
     {
@@ -232,5 +232,5 @@
     "cliff_rock"
   ],
   "texture_size": 512,
-  "build_seconds": 22.06
+  "build_seconds": 22.01
 }

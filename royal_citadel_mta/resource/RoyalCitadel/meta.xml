@@ -1,6 +1,6 @@
 <!-- Royal Citadel | standalone MTA:SA 1.6+ resource -->
 <meta>
-  <info author="Royal Citadel build" name="Royal Citadel" version="1.0.0" type="map"
+  <info author="Royal Citadel build" name="Royal Citadel" version="1.0.1" type="map"
         description="Modular highland royal palace, fortified city, gardens and mountain approach." />
   <min_mta_version client="1.6.0-9.22676" />
   <script src="models.lua" type="client" />
