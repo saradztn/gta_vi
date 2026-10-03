@@ -1,0 +1,70 @@
+<!-- Royal Citadel | standalone MTA:SA 1.6+ resource -->
+<meta>
+  <info author="Royal Citadel build" name="Royal Citadel" version="1.0.1" type="map"
+        description="Modular highland royal palace, fortified city, gardens and mountain approach." />
+  <min_mta_version client="1.6.0-9.22676" />
+  <script src="models.lua" type="client" />
+  <script src="layout.lua" type="client" />
+  <script src="client.lua" type="client" />
+  <script src="server.lua" type="server" />
+  <file src="files/royal_citadel.txd" />
+  <file src="files/dff/island.dff" />
+  <file src="files/dff/island_lod.dff" />
+  <file src="files/col/island.col" />
+  <file src="files/dff/wall.dff" />
+  <file src="files/dff/wall_lod.dff" />
+  <file src="files/col/wall.col" />
+  <file src="files/dff/tower_round.dff" />
+  <file src="files/dff/tower_round_lod.dff" />
+  <file src="files/col/tower_round.col" />
+  <file src="files/dff/tower_spire.dff" />
+  <file src="files/dff/tower_spire_lod.dff" />
+  <file src="files/col/tower_spire.col" />
+  <file src="files/dff/palace.dff" />
+  <file src="files/dff/palace_lod.dff" />
+  <file src="files/col/palace.col" />
+  <file src="files/dff/wing.dff" />
+  <file src="files/dff/wing_lod.dff" />
+  <file src="files/col/wing.col" />
+  <file src="files/dff/gate.dff" />
+  <file src="files/dff/gate_lod.dff" />
+  <file src="files/col/gate.col" />
+  <file src="files/dff/bridge.dff" />
+  <file src="files/dff/bridge_lod.dff" />
+  <file src="files/col/bridge.col" />
+  <file src="files/dff/stair.dff" />
+  <file src="files/dff/stair_lod.dff" />
+  <file src="files/col/stair.col" />
+  <file src="files/dff/fountain.dff" />
+  <file src="files/dff/fountain_lod.dff" />
+  <file src="files/col/fountain.col" />
+  <file src="files/dff/statue.dff" />
+  <file src="files/dff/statue_lod.dff" />
+  <file src="files/col/statue.col" />
+  <file src="files/dff/pavilion.dff" />
+  <file src="files/dff/pavilion_lod.dff" />
+  <file src="files/col/pavilion.col" />
+  <file src="files/dff/rock.dff" />
+  <file src="files/dff/rock_lod.dff" />
+  <file src="files/col/rock.col" />
+  <file src="files/dff/pine.dff" />
+  <file src="files/dff/pine_lod.dff" />
+  <file src="files/col/pine.col" />
+  <file src="files/dff/hedge.dff" />
+  <file src="files/dff/hedge_lod.dff" />
+  <file src="files/dff/banner.dff" />
+  <file src="files/dff/banner_lod.dff" />
+  <file src="files/dff/plaza.dff" />
+  <file src="files/dff/plaza_lod.dff" />
+  <file src="files/col/plaza.col" />
+  <file src="files/dff/waterfall.dff" />
+  <file src="files/dff/waterfall_lod.dff" />
+  <file src="files/dff/moat.dff" />
+  <file src="files/dff/moat_lod.dff" />
+  <file src="files/dff/mountain.dff" />
+  <file src="files/dff/mountain_lod.dff" />
+  <file src="files/col/mountain.col" />
+  <file src="files/dff/lamp.dff" />
+  <file src="files/dff/lamp_lod.dff" />
+  <file src="files/col/lamp.col" />
+</meta>
