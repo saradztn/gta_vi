@@ -1,0 +1,11 @@
+# packaged deliverable (regenerate: cd resource && zip -r RoadRealism.zip RoadRealism)
+resource/*.zip
+
+# reference extract + verification scratch (regenerate from source.zip / tools/preview.py)
+.arena/
+source/_work/
+
+# python
+__pycache__/
+*.pyc
+.venv/

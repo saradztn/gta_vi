@@ -1,0 +1,113 @@
+<!-- Created by: Arena.ai Agent Mode (AI) - RoadRealism MTA:SA resource -->
+<meta>
+    <info author="Arena.ai Agent Mode" name="RoadRealism" version="1.0.0" type="script"
+          description="Photorealistic road materials, wet asphalt, puddles and rain for the
+                       ORIGINAL San Andreas map.  No new geometry, no new roads, no changed
+                       collisions - only the road materials and the lighting on them.
+                       Commands: /roadinfo /roadquality /roadrain /roadwet /roadfx /roadrefl
+                       /roadexposure /roadnight /roadpuddle /roadscan /roadtextures
+                       /roadreport /roadapply /roadremove /roadreload /roaddebug" />
+    <min_mta_version client="1.6.0-9.22676" />
+
+    <script src="config/settings.lua" type="client" />
+    <script src="config/materials.lua" type="client" />
+    <script src="config/roads.lua" type="client" />
+    <script src="tools/texture_scanner.lua" type="client" />
+    <script src="tools/material_report.lua" type="client" />
+    <script src="reflect.lua" type="client" />
+    <script src="rain.lua" type="client" />
+    <script src="client.lua" type="client" />
+    <script src="server.lua" type="server" />
+
+    <file src="shaders/road.fx" />
+    <file src="shaders/wetroad.fx" />
+    <file src="shaders/reflection.fx" />
+    <file src="shaders/rain.fx" />
+    <file src="shaders/post.fx" />
+    <file src="audio/rain_loop.wav" />
+    <file src="files/road_fallback.txd" />
+    <file src="textures/asphalt/asphalt_bridge.dds" />
+    <file src="textures/asphalt/asphalt_carpark.dds" />
+    <file src="textures/asphalt/asphalt_cracked.dds" />
+    <file src="textures/asphalt/asphalt_dock.dds" />
+    <file src="textures/asphalt/asphalt_dusty.dds" />
+    <file src="textures/asphalt/asphalt_freeway_edge.dds" />
+    <file src="textures/asphalt/asphalt_gravel.dds" />
+    <file src="textures/asphalt/asphalt_highway.dds" />
+    <file src="textures/asphalt/asphalt_industrial.dds" />
+    <file src="textures/asphalt/asphalt_junction.dds" />
+    <file src="textures/asphalt/asphalt_mid.dds" />
+    <file src="textures/asphalt/asphalt_new.dds" />
+    <file src="textures/asphalt/asphalt_oil.dds" />
+    <file src="textures/asphalt/asphalt_old.dds" />
+    <file src="textures/asphalt/asphalt_patched.dds" />
+    <file src="textures/asphalt/asphalt_runway.dds" />
+    <file src="textures/asphalt/asphalt_rural.dds" />
+    <file src="textures/asphalt/asphalt_suburban.dds" />
+    <file src="textures/asphalt/asphalt_tirewear.dds" />
+    <file src="textures/asphalt/asphalt_tunnel.dds" />
+    <file src="textures/asphalt/asphalt_wet_track.dds" />
+    <file src="textures/asphalt/asphalt_worn.dds" />
+    <file src="textures/concrete/concrete_industrial.dds" />
+    <file src="textures/concrete/concrete_old.dds" />
+    <file src="textures/concrete/concrete_road.dds" />
+    <file src="textures/detail/detail_agg.dds" />
+    <file src="textures/detail/macro.dds" />
+    <file src="textures/markings/mark_arrow_left.dds" />
+    <file src="textures/markings/mark_arrow_right.dds" />
+    <file src="textures/markings/mark_arrow_straight.dds" />
+    <file src="textures/markings/mark_broken_white.dds" />
+    <file src="textures/markings/mark_crosswalk.dds" />
+    <file src="textures/markings/mark_double_white.dds" />
+    <file src="textures/markings/mark_double_yellow.dds" />
+    <file src="textures/markings/mark_edge_white.dds" />
+    <file src="textures/markings/mark_hatching.dds" />
+    <file src="textures/markings/mark_line_white.dds" />
+    <file src="textures/markings/mark_line_yellow.dds" />
+    <file src="textures/markings/mark_stop_word.dds" />
+    <file src="textures/markings/mark_stopline.dds" />
+    <file src="textures/normals/detail_agg.dds" />
+    <file src="textures/normals/detail_micro.dds" />
+    <file src="textures/pavement/kerb_concrete.dds" />
+    <file src="textures/pavement/pavement_brick.dds" />
+    <file src="textures/pavement/pavement_slab.dds" />
+    <file src="textures/pavement/pavement_tile.dds" />
+    <file src="textures/puddles/puddle_mask.dds" />
+    <file src="textures/roughness/asphalt_bridge_mask.dds" />
+    <file src="textures/roughness/asphalt_carpark_mask.dds" />
+    <file src="textures/roughness/asphalt_cracked_mask.dds" />
+    <file src="textures/roughness/asphalt_dock_mask.dds" />
+    <file src="textures/roughness/asphalt_dusty_mask.dds" />
+    <file src="textures/roughness/asphalt_freeway_edge_mask.dds" />
+    <file src="textures/roughness/asphalt_gravel_mask.dds" />
+    <file src="textures/roughness/asphalt_highway_mask.dds" />
+    <file src="textures/roughness/asphalt_industrial_mask.dds" />
+    <file src="textures/roughness/asphalt_junction_mask.dds" />
+    <file src="textures/roughness/asphalt_mid_mask.dds" />
+    <file src="textures/roughness/asphalt_new_mask.dds" />
+    <file src="textures/roughness/asphalt_oil_mask.dds" />
+    <file src="textures/roughness/asphalt_old_mask.dds" />
+    <file src="textures/roughness/asphalt_patched_mask.dds" />
+    <file src="textures/roughness/asphalt_runway_mask.dds" />
+    <file src="textures/roughness/asphalt_rural_mask.dds" />
+    <file src="textures/roughness/asphalt_suburban_mask.dds" />
+    <file src="textures/roughness/asphalt_tirewear_mask.dds" />
+    <file src="textures/roughness/asphalt_tunnel_mask.dds" />
+    <file src="textures/roughness/asphalt_wet_track_mask.dds" />
+    <file src="textures/roughness/asphalt_worn_mask.dds" />
+    <file src="textures/roughness/concrete_industrial_mask.dds" />
+    <file src="textures/roughness/concrete_old_mask.dds" />
+    <file src="textures/roughness/concrete_road_mask.dds" />
+    <file src="textures/roughness/kerb_concrete_mask.dds" />
+    <file src="textures/roughness/pavement_brick_mask.dds" />
+    <file src="textures/roughness/pavement_slab_mask.dds" />
+    <file src="textures/roughness/pavement_tile_mask.dds" />
+    <file src="textures/roughness/shoulder_dirt_mask.dds" />
+    <file src="textures/roughness/shoulder_gravel_mask.dds" />
+    <file src="textures/shoulder/shoulder_dirt.dds" />
+    <file src="textures/shoulder/shoulder_gravel.dds" />
+    <file src="textures/wet/droplets.png" />
+    <file src="textures/wet/rain_streak.png" />
+    <file src="textures/wet/splash.png" />
+    <file src="textures/wet/wet_normal.dds" />
+</meta>
