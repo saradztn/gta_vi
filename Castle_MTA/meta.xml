@@ -1,0 +1,30 @@
+<?xml version='1.0' encoding='utf-8'?>
+<meta>
+    <info author="Castle_MTA Project" name="Castle MTA - Royal Island Fortress" version="1.0.0" type="script" description="Large walkable Gothic castle with exterior, palace floors, cellar, LOD and time-based lighting." />
+    <min_mta_version client="1.6.0" />
+    <script src="castle_data.lua" type="client" />
+    <script src="client.lua" type="client" />
+    <file src="models/castle_ground.dff" />
+    <file src="models/castle_ground.col" />
+    <file src="models/castle_bridge.dff" />
+    <file src="models/castle_bridge.col" />
+    <file src="models/castle_wall_run.dff" />
+    <file src="models/castle_wall_run.col" />
+    <file src="models/castle_gatehouse.dff" />
+    <file src="models/castle_gatehouse.col" />
+    <file src="models/castle_outer_tower.dff" />
+    <file src="models/castle_outer_tower.col" />
+    <file src="models/castle_palace_shell.dff" />
+    <file src="models/castle_palace_shell.col" />
+    <file src="models/castle_palace_ground.dff" />
+    <file src="models/castle_palace_ground.col" />
+    <file src="models/castle_palace_upper.dff" />
+    <file src="models/castle_palace_upper.col" />
+    <file src="models/castle_dungeon.dff" />
+    <file src="models/castle_dungeon.col" />
+    <file src="models/castle_furniture.dff" />
+    <file src="models/castle_night.dff" />
+    <file src="models/castle_lod.dff" />
+    <file src="models/castle.txd" />
+    <file src="textures/glow.png" />
+</meta>

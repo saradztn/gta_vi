@@ -1,0 +1,537 @@
+{
+  "project": "Castle_MTA",
+  "format": "RenderWare 3.6 GTA SA / MTA:SA",
+  "models": [
+    {
+      "name": "castle_ground",
+      "vertices": 8126,
+      "triangles": 4950,
+      "materials": [
+        "c_arch",
+        "c_glass",
+        "c_grass",
+        "c_iron",
+        "c_marble",
+        "c_rock",
+        "c_stone",
+        "c_water",
+        "c_wood"
+      ],
+      "dff_bytes": 360878,
+      "col_bytes": 2536,
+      "collision": {
+        "boxes": 4,
+        "vertices": 128,
+        "faces": 192
+      },
+      "bounds": [
+        [
+          -117.45999908447266,
+          -98.2300033569336,
+          -18.0
+        ],
+        [
+          118.01000213623047,
+          96.66000366210938,
+          8.680000305175781
+        ]
+      ],
+      "emissive": false
+    },
+    {
+      "name": "castle_bridge",
+      "vertices": 2620,
+      "triangles": 1608,
+      "materials": [
+        "c_arch",
+        "c_glass",
+        "c_iron",
+        "c_marble",
+        "c_rock",
+        "c_stone"
+      ],
+      "dff_bytes": 117390,
+      "col_bytes": 1128,
+      "collision": {
+        "boxes": 36,
+        "vertices": 0,
+        "faces": 0
+      },
+      "bounds": [
+        [
+          -11.680000305175781,
+          -40.0,
+          -9.0
+        ],
+        [
+          11.680000305175781,
+          40.0,
+          5.0
+        ]
+      ],
+      "emissive": false
+    },
+    {
+      "name": "castle_wall_run",
+      "vertices": 2016,
+      "triangles": 1008,
+      "materials": [
+        "c_arch",
+        "c_glass",
+        "c_iron",
+        "c_marble",
+        "c_stone"
+      ],
+      "dff_bytes": 85914,
+      "col_bytes": 1436,
+      "collision": {
+        "boxes": 47,
+        "vertices": 0,
+        "faces": 0
+      },
+      "bounds": [
+        [
+          -47.29999923706055,
+          -5.199999809265137,
+          1.0
+        ],
+        [
+          47.29999923706055,
+          5.199999809265137,
+          20.25
+        ]
+      ],
+      "emissive": false
+    },
+    {
+      "name": "castle_gatehouse",
+      "vertices": 5234,
+      "triangles": 3020,
+      "materials": [
+        "c_arch",
+        "c_cloth",
+        "c_iron",
+        "c_marble",
+        "c_roof",
+        "c_stone"
+      ],
+      "dff_bytes": 229284,
+      "col_bytes": 30364,
+      "collision": {
+        "boxes": 42,
+        "vertices": 1970,
+        "faces": 2156
+      },
+      "bounds": [
+        [
+          -17.799999237060547,
+          -12.229999542236328,
+          0.800000011920929
+        ],
+        [
+          17.799999237060547,
+          12.229999542236328,
+          40.0
+        ]
+      ],
+      "emissive": false
+    },
+    {
+      "name": "castle_outer_tower",
+      "vertices": 2804,
+      "triangles": 1764,
+      "materials": [
+        "c_arch",
+        "c_glass",
+        "c_gold",
+        "c_iron",
+        "c_marble",
+        "c_roof",
+        "c_stone"
+      ],
+      "dff_bytes": 126560,
+      "col_bytes": 15704,
+      "collision": {
+        "boxes": 17,
+        "vertices": 1014,
+        "faces": 1128
+      },
+      "bounds": [
+        [
+          -10.350000381469727,
+          -10.350000381469727,
+          0.7200000286102295
+        ],
+        [
+          10.350000381469727,
+          10.350000381469727,
+          43.79999923706055
+        ]
+      ],
+      "emissive": false
+    },
+    {
+      "name": "castle_palace_shell",
+      "vertices": 58749,
+      "triangles": 33136,
+      "materials": [
+        "c_arch",
+        "c_glass",
+        "c_gold",
+        "c_iron",
+        "c_marble",
+        "c_roof",
+        "c_stone"
+      ],
+      "dff_bytes": 2544242,
+      "col_bytes": 96044,
+      "collision": {
+        "boxes": 942,
+        "vertices": 6058,
+        "faces": 4150
+      },
+      "bounds": [
+        [
+          -54.599998474121094,
+          -40.0,
+          0.7799999713897705
+        ],
+        [
+          54.599998474121094,
+          54.0,
+          95.5
+        ]
+      ],
+      "emissive": false
+    },
+    {
+      "name": "castle_palace_ground",
+      "vertices": 6444,
+      "triangles": 3732,
+      "materials": [
+        "c_arch",
+        "c_marble",
+        "c_stone"
+      ],
+      "dff_bytes": 281796,
+      "col_bytes": 8668,
+      "collision": {
+        "boxes": 151,
+        "vertices": 208,
+        "faces": 384
+      },
+      "bounds": [
+        [
+          -53.0,
+          -38.20000076293945,
+          0.6200000047683716
+        ],
+        [
+          53.0,
+          52.0,
+          7.400000095367432
+        ]
+      ],
+      "emissive": false
+    },
+    {
+      "name": "castle_palace_upper",
+      "vertices": 5200,
+      "triangles": 2894,
+      "materials": [
+        "c_arch",
+        "c_marble",
+        "c_stone",
+        "c_wood"
+      ],
+      "dff_bytes": 225378,
+      "col_bytes": 11012,
+      "collision": {
+        "boxes": 52,
+        "vertices": 834,
+        "faces": 554
+      },
+      "bounds": [
+        [
+          -53.0,
+          -38.0,
+          6.619999885559082
+        ],
+        [
+          53.0,
+          52.0,
+          20.729999542236328
+        ]
+      ],
+      "emissive": false
+    },
+    {
+      "name": "castle_dungeon",
+      "vertices": 4017,
+      "triangles": 2220,
+      "materials": [
+        "c_arch",
+        "c_iron",
+        "c_marble",
+        "c_rock",
+        "c_stone",
+        "c_wood"
+      ],
+      "dff_bytes": 174336,
+      "col_bytes": 4488,
+      "collision": {
+        "boxes": 156,
+        "vertices": 0,
+        "faces": 0
+      },
+      "bounds": [
+        [
+          -88.0,
+          -74.0,
+          -7.420000076293945
+        ],
+        [
+          52.650001525878906,
+          52.650001525878906,
+          1.2200000286102295
+        ]
+      ],
+      "emissive": false
+    },
+    {
+      "name": "castle_furniture",
+      "vertices": 25680,
+      "triangles": 15478,
+      "materials": [
+        "c_arch",
+        "c_carpet",
+        "c_cloth",
+        "c_glass",
+        "c_gold",
+        "c_iron",
+        "c_marble",
+        "c_stone",
+        "c_wood"
+      ],
+      "dff_bytes": 1133176,
+      "col_bytes": 0,
+      "collision": {
+        "boxes": 0,
+        "vertices": 0,
+        "faces": 0
+      },
+      "bounds": [
+        [
+          -50.0,
+          -34.0,
+          -7.0
+        ],
+        [
+          50.5,
+          50.279998779296875,
+          17.200000762939453
+        ]
+      ],
+      "emissive": false
+    },
+    {
+      "name": "castle_night",
+      "vertices": 2016,
+      "triangles": 1008,
+      "materials": [
+        "c_glow"
+      ],
+      "dff_bytes": 93360,
+      "col_bytes": 0,
+      "collision": {
+        "boxes": 0,
+        "vertices": 0,
+        "faces": 0
+      },
+      "bounds": [
+        [
+          -114.37999725341797,
+          -157.0,
+          -1.7000000476837158
+        ],
+        [
+          114.37999725341797,
+          95.9000015258789,
+          52.5
+        ]
+      ],
+      "emissive": true
+    },
+    {
+      "name": "castle_lod",
+      "vertices": 1676,
+      "triangles": 910,
+      "materials": [
+        "c_arch",
+        "c_rock",
+        "c_roof",
+        "c_stone"
+      ],
+      "dff_bytes": 72908,
+      "col_bytes": 0,
+      "collision": {
+        "boxes": 0,
+        "vertices": 0,
+        "faces": 0
+      },
+      "bounds": [
+        [
+          -115.5,
+          -165.0,
+          -15.0
+        ],
+        [
+          115.5,
+          94.98999786376953,
+          92.0
+        ]
+      ],
+      "emissive": false
+    }
+  ],
+  "textures": [
+    {
+      "name": "c_arch",
+      "size": [
+        512,
+        512
+      ],
+      "mipLevels": 10,
+      "dxt": "DXT1"
+    },
+    {
+      "name": "c_carpet",
+      "size": [
+        512,
+        512
+      ],
+      "mipLevels": 10,
+      "dxt": "DXT1"
+    },
+    {
+      "name": "c_cloth",
+      "size": [
+        512,
+        512
+      ],
+      "mipLevels": 10,
+      "dxt": "DXT1"
+    },
+    {
+      "name": "c_glass",
+      "size": [
+        512,
+        512
+      ],
+      "mipLevels": 10,
+      "dxt": "DXT1"
+    },
+    {
+      "name": "c_glow",
+      "size": [
+        256,
+        256
+      ],
+      "mipLevels": 9,
+      "dxt": "DXT1"
+    },
+    {
+      "name": "c_gold",
+      "size": [
+        512,
+        512
+      ],
+      "mipLevels": 10,
+      "dxt": "DXT1"
+    },
+    {
+      "name": "c_grass",
+      "size": [
+        512,
+        512
+      ],
+      "mipLevels": 10,
+      "dxt": "DXT1"
+    },
+    {
+      "name": "c_iron",
+      "size": [
+        512,
+        512
+      ],
+      "mipLevels": 10,
+      "dxt": "DXT1"
+    },
+    {
+      "name": "c_marble",
+      "size": [
+        512,
+        512
+      ],
+      "mipLevels": 10,
+      "dxt": "DXT1"
+    },
+    {
+      "name": "c_rock",
+      "size": [
+        512,
+        512
+      ],
+      "mipLevels": 10,
+      "dxt": "DXT1"
+    },
+    {
+      "name": "c_roof",
+      "size": [
+        512,
+        512
+      ],
+      "mipLevels": 10,
+      "dxt": "DXT1"
+    },
+    {
+      "name": "c_stone",
+      "size": [
+        512,
+        512
+      ],
+      "mipLevels": 10,
+      "dxt": "DXT1"
+    },
+    {
+      "name": "c_water",
+      "size": [
+        512,
+        512
+      ],
+      "mipLevels": 10,
+      "dxt": "DXT1"
+    },
+    {
+      "name": "c_wood",
+      "size": [
+        512,
+        512
+      ],
+      "mipLevels": 10,
+      "dxt": "DXT1"
+    }
+  ],
+  "placement_count": 29,
+  "dynamic_light_points": 41,
+  "totals": {
+    "vertices": 124582,
+    "triangles": 71728,
+    "dff_bytes": 5445222,
+    "col_bytes": 171380,
+    "txd_bytes": 2318124,
+    "model_folder_bytes": 7934726
+  },
+  "build_seconds": 8.23,
+  "validation_note": "Structural checks are separate; an MTA client is required for runtime rendering/play-test."
+}
