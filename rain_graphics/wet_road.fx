@@ -11,7 +11,7 @@ texture gScreenSource;
 float4x4 gWorld;
 float4x4 gWorldViewProjection;
 float uWetness = 0.0;
-float uReflectionStrength = 0.16;
+float uReflectionStrength = 0.48;
 float uScreenValid = 0.0;
 float uTime = 0.0;
 
@@ -81,12 +81,19 @@ float4 PixelShaderFunction(PSInput input) : COLOR0
     float phase = frac(dot(input.TexCoord, float2(43.0, 19.0)) + uTime * 0.08);
     float ripple = abs(phase * 2.0 - 1.0);
     float2 rippleOffset = (float2(ripple, 1.0 - ripple) - 0.5) * wet * 0.004;
-    float2 reflectionUV = saturate(input.ScreenUV + float2(0.0, -0.022) + rippleOffset);
+    // Mirror the screen vertically around the horizon so the road picks up nearby
+    // sky/building colour instead of sampling almost the same asphalt pixel.
+    float2 mirroredScreenUV = float2(input.ScreenUV.x, 1.0 - input.ScreenUV.y);
+    float2 reflectionUV = saturate(mirroredScreenUV + rippleOffset);
     float3 sceneReflection = tex2D(ScreenSampler, reflectionUV).rgb;
 
-    float3 wetColor = material.rgb * (1.0 - wet * 0.14);
+    // Strong enough to read on the original, non-neon streets, while preserving texture detail.
+    float3 wetColor = material.rgb * (1.0 - wet * 0.28);
     float reflectionAmount = uScreenValid * wet * uReflectionStrength;
-    wetColor = lerp(wetColor, sceneReflection * float3(0.68, 0.77, 0.90), reflectionAmount);
+    wetColor = lerp(wetColor, sceneReflection * float3(0.72, 0.82, 0.96), reflectionAmount);
+
+    float highlight = wet * saturate(1.0 - abs(ripple - 0.5) * 2.0) * 0.07;
+    wetColor += float3(0.82, 0.90, 1.0) * highlight;
 
     return float4(wetColor, material.a);
 }

@@ -2,18 +2,17 @@
 -- This resource does not create, move, replace, or remove map objects/models.
 
 local DEFAULT_INTENSITY = 0.78
-local REFLECTION_STRENGTH = 0.16
+local REFLECTION_STRENGTH = 0.48
 local SCREEN_CAPTURE_INTERVAL = 100 -- ms; keeps the screen-space sheen inexpensive
 local ROAD_SHADER_DISTANCE = 700
 local FORCE_RAINY_SKY = true
 local RAINY_WEATHER_ID = 8 -- GTA:SA rainy preset; set FORCE_RAINY_SKY=false to keep server weather
 
--- Intentionally limited to names that look like road/asphalt materials. Edit this list
--- if a custom map uses different texture names. The shader also masks non-horizontal faces.
+-- GTA:SA uses many area-specific texture names, so bind once to the world wildcard.
+-- Generated normals in the shader restrict the visible effect to upward-facing
+-- surfaces near the player (roads, pavements and flat roofs).
 local ROAD_TEXTURES = {
-    "*road*",
-    "*asphalt*",
-    "*rway*",
+    "*",
 }
 
 local enabled = false
@@ -83,7 +82,7 @@ local function createWetShader()
     end
 
     if #appliedPatterns == 0 then
-        outputDebugString("[RainFX] No road texture patterns matched. Check ROAD_TEXTURES in client.lua.", 2)
+        outputDebugString("[RainFX] Shader loaded, but MTA rejected the world texture wildcard.", 2)
     end
 
     return true
@@ -105,10 +104,12 @@ local function enableRainFX()
     setRainLevel(intensity)
 
     local shaderReady = createWetShader()
-    if shaderReady then
-        chat("rain and wet-road reflections enabled. Use /rainfx off to restore the normal view.")
+    if shaderReady and #appliedPatterns > 0 then
+        chat(string.format("rain and wet-road reflections enabled (%d world texture binding).", #appliedPatterns))
+    elseif shaderReady then
+        chat("rain enabled, but the world shader did not bind to any texture. Check debugscript 3.")
     else
-        chat("rain enabled, but the graphics shader failed to load. See debugscript 3.")
+        chat("rain enabled, but the graphics shader failed to load. Check debugscript 3.")
     end
 end
 
@@ -205,7 +206,7 @@ addCommandHandler("rainfx", function(_, action, value)
     elseif action == "intensity" then
         setIntensity(value)
     elseif action == "status" then
-        chat(string.format("%s | intensity %.2f | wetness %.2f | %d road texture patterns", enabled and "on" or "off", intensity, wetness, #appliedPatterns))
+        chat(string.format("%s | shader %s | screen source %s | intensity %.2f | wetness %.2f | bindings %d", enabled and "on" or "off", isElement(shader) and "ready" or "off", isElement(screenSource) and "ready" or "fallback", intensity, wetness, #appliedPatterns))
     else
         chat("commands: /rainfx [on|off|toggle|status] or /rainfx intensity 0-1")
     end
